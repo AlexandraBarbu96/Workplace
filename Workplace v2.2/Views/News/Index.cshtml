@@ -1,0 +1,172 @@
+﻿@model Workplace_v2._2.Models.NewsViewModel
+@using Workplace_v2._2.Models;
+@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "News";
+    ApplicationDbContext db = new ApplicationDbContext();
+    var user = db.Users.Find(User.Identity.GetUserId());
+}
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+
+<article id="tabs-min" class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
+    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+        <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active">
+            <a href="#requests" onclick="hideBadge('requests')">
+                Question requests
+                @{
+                    var countRequests = Model.Requests.Count();
+                    if (countRequests > 0)
+                    {
+                        <span class="badge" id="requests-badge">@countRequests</span>
+                    }
+                }
+            </a>
+        </li>
+        <li class="ui-state-default ui-corner-top" onclick="hideBadge('interviews')">
+            <a href="#interviews">
+                Interviews
+                @{
+                    var countInterviews = Model.Interviews.Count();
+                    if (countInterviews > 0)
+                    {
+                        <span class="badge" id="interviews-badge">@countInterviews</span>
+                    }
+                }
+            </a>
+        </li>
+        <li class="ui-state-default ui-corner-top" onclick="hideBadge('candidates')">
+            <a href="#candidates">
+                New Candidates
+                @{
+                    var countCandidates = Model.Candidates.Count();
+                    if (countCandidates > 0)
+                    {
+                        <span class="badge" id="candidates-badge">@countCandidates</span>
+                    }
+                }
+            </a>
+        </li>
+    </ul>
+    <div id="requests" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+        <div class="grid" id="content-grid">
+            @if (Model.Requests.Any())
+            {
+                @Html.Partial("~/Views/News/QuestionsPartial.cshtml", Model.Requests)
+            }
+            else
+            {
+                <dl>
+                    <dd style="text-align:center">
+                        @("No question requests.")
+                    </dd>
+                </dl>
+            }
+        </div>
+    </div>
+    <div id="interviews" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide">
+        @if (Model.Interviews.Any())
+        {
+            <div class="grid" id="user-grid">
+                @Html.Partial("~/Views/News/InterviewsPartial.cshtml", Model.Interviews)
+            </div>
+        }
+        else
+        {
+            <div class="grid" id="content-grid">
+                <dl>
+                    <dd style="text-align:center">
+                        @("No interviews.")
+                    </dd>
+                </dl>
+            </div>
+        }
+    </div>
+    <div id="candidates" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide">
+        <div class="grid" id="content-grid">
+            @if (Model.Candidates.Any())
+            {
+                @Html.Partial("~/Views/News/CandidatesPartial.cshtml", Model)
+            }
+            else
+            {
+                <dl>
+                    <dd style="text-align:center">
+                        @("No new candidates.")
+                    </dd>
+                </dl>
+            }
+        </div>
+    </div>
+</article>
+
+
+@section Style{
+    <style>
+
+        #content-grid {
+            margin: 2vw;
+            grid-template-columns: 1fr;
+        }
+
+            #content-grid > dl > dd > form {
+                margin: 5px;
+                float: right;
+                display: inline-block;
+            }
+
+                #content-grid > dl > dd > form span {
+                    color: #838383;
+                }
+
+                    #content-grid > dl > dd > form span:hover {
+                        color: #0b91d4;
+                    }
+
+            #content-grid > dl > dd > ul > li {
+                padding: 3px;
+                display: inline-block;
+            }
+            #content-grid > dl > dd:last-child > ul > li {
+                display: block;
+            }
+
+            @@media(max-width:630px){
+                #content-grid > dl > dd:first-child{
+                    font-size:95%;
+                }
+            }
+        @@media(max-width:580px) {
+            #content-grid > dl > dd:first-child {
+                font-size: 85%;
+            }
+        }
+        @@media(max-width:400px) {
+            #content-grid > dl > dd:first-child {
+                font-size: 85%;
+            }
+        }
+        #from-layout{
+            display:none;
+        }
+    </style>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+
+}
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#tabs-min").tabs();
+        });
+        function hideBadge(id) {
+            document.getElementById(id + "-badge").style.display = "none";
+        }
+    </script>
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+}

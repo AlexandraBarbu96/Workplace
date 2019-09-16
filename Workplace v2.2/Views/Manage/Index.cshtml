@@ -1,0 +1,60 @@
+﻿@model Workplace_v2._2.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "Edit User";
+    string userRoleName = ViewBag.userRoleName;
+}
+@using (Html.BeginForm("Index", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HttpMethodOverride(HttpVerbs.Put)
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.CandidateInterviewId)
+    @Html.HiddenFor(m => m.AdminDepartmentId)
+    @Html.HiddenFor(m => m.EmployeeDepartmentId)
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <br />
+    <div class="form-group">
+        <div class="row col-sm-12">
+            <div class="col-sm-4">
+                <i class="glyphicon glyphicon-user"></i>
+                @Html.Label("FirstName", "First Name", new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-sm-4">
+                @Html.Label("LastName", "Last Name", new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-sm-4">
+                @Html.Label("UserName", "Username", new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row col-sm-12">
+            <div class="col-sm-4">
+                <i class="glyphicon glyphicon-envelope"></i>
+                @Html.Label("Email", "Email", new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-sm-4">
+                <i class="glyphicon glyphicon-phone"></i>
+                @Html.Label("PhoneNumber", "Phone Number", new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row col-sm-12">
+            <div class="col-sm-4" style="margin-top:2.5rem">
+                <i class="glyphicon glyphicon-lock"></i>
+                @Html.ActionLink("Change your password", "ChangePassword")
+            </div>
+        </div>
+        <div class="col-md-offset-1 col-md-12" , style="margin-top:2.5rem">
+            <input type="submit" class="site-button" value="Save" />
+        </div>
+    </div>
+}

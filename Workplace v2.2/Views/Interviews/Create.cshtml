@@ -1,0 +1,89 @@
+﻿@model Workplace_v2._2.Models.InterviewQuestion
+@using Workplace_v2._2.Models;
+@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = Model.Job.Title + " Interview";
+    List<Question> questionsToAdd = (List<Question>)HttpContext.Current.Session["questionsToAdd" + Session.SessionID];
+    List<Question> addedQuestions = (List<Question>)HttpContext.Current.Session["addedQuestions" + Session.SessionID];
+    //bool isEdit = (bool)HttpContext.Current.Session["isEdit" + Session.SessionID];
+}
+<ol class="breadcrumb">
+    <li><h3>@ViewBag.Title</h3></li>
+</ol>
+@*<div>
+        @if (isEdit)
+        {
+            @Html.ActionLink("❮ Edit job", "Edit", "Jobs", new { id = jobId }, new { @class = "btn btn-default", @style = "display:inline-block" })
+        }
+        else
+        {
+            @Html.ActionLink("❮ Edit job", "Create", "Jobs", new { id = departmentId }, new { @class = "btn btn-default", @style = "display:inline-block" })
+        }
+        @Html.ActionLink("Required Studies ❯", "AddJobStudies", "Jobs", new { }, new { @class = "btn btn-default", @style = "display:inline-block" })
+    </div>
+*@
+
+<div>
+    <table>
+        <tr>
+            <th class="col-sm-4"></th>
+            <th class="col-sm-4"></th>
+        </tr>
+        @foreach (var item in questionsToAdd)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Text)
+                </td>
+                <td>
+                    @Html.ActionLink("Add", "AddQuestion", new { idq = item.QuestionId }, new { @class = "btn btn-default", @style = "border:none" })
+                </td>
+            </tr>
+        }
+    </table>
+    <table>
+        <tr>
+            <th class="col-sm-4"></th>
+            <th class="col-sm-4"></th>
+        </tr>
+            @foreach (var item in addedQuestions)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Text)
+                    </td>
+                    <td>
+                        <a href="~/Interviews/RemoveQuestion/?idq=@item.QuestionId" class="glyphicon glyphicon-remove-circle" data_toggle="tooltip" data_placement="bottom" title="Remove"></a>
+                    </td>
+                </tr>
+            }
+
+    </table>
+    <div>
+        @using (Html.BeginForm("CreateStep2", "Interviews", new { id = Model.JobId }, FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="submit" value="Save" class="btn btn-default" />
+        }
+    </div>
+</div>
+
+<div style="clear:left;position:relative;margin-top:2.5rem">
+    @Html.ActionLink("Cancel", "Details", "Jobs", new { id = Model.JobId }, new { @class = "btn btn-default" })
+</div>
+<style>
+    table, td, th {
+        border: 0.1rem solid #ddd;
+        text-align: left;
+    }
+
+    table {
+        float: left;
+        border-collapse: collapse;
+        width: auto;
+    }
+
+    th, td {
+        padding: 2rem;
+    }
+</style>

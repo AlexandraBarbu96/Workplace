@@ -1,0 +1,312 @@
+﻿@model Workplace_v2._2.Models.ExperienceViewModel
+@using Workplace_v2._2.Models;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ApplicationDbContext db = new ApplicationDbContext();
+    var user = db.Users.Find(Model.userId);
+    ViewBag.Title = user.UserName;
+    var job = db.Jobs.Find(Model.JobId);
+    var countSkills = new int[Model.addedSkills.Count()];
+    var countJobSkills = new int[job.JobSkills.Count()];
+    //var countEducations = new int[Model.userEducation.Count()];
+}
+
+<div class="grid" id="content-grid">
+    <dl>
+        <dd>Personal Info</dd>
+        <dd>
+            <i class="glyphicon glyphicon-user"></i>
+            @Html.Label("FirstName", "First Name", new { @class = "control-label" })
+            @Html.DisplayFor(m => user.FirstName, new { @class = "form-control" })
+        </dd>
+        <dd>
+            @Html.Label("LastName", "Last Name", new { @class = "control-label" })
+            @Html.DisplayFor(m => user.LastName, new { @class = "form-control" })
+        </dd>
+        <dd>
+            @Html.Label("UserName", "Username", new { @class = "control-label" })
+            @Html.DisplayFor(m => user.UserName, new { @class = "form-control" })
+        </dd>
+        <dd>
+            <i class="glyphicon glyphicon-envelope"></i>
+            @Html.Label("Email", "Email", new { @class = "control-label" })
+            @Html.DisplayFor(m => user.Email, new { @class = "form-control" })
+        </dd>
+        <dd>
+            <i class="glyphicon glyphicon-phone"></i>
+            @Html.Label("PhoneNumber", "Phone Number", new { @class = "control-label" })
+            @Html.DisplayFor(m => user.PhoneNumber, new { @class = "form-control" })
+        </dd>
+        <dd>
+            <i class="glyphicon glyphicon-th-list"></i>
+            @Html.Label("Department", "Department", new { @class = "control-label" })
+            @Html.DisplayFor(m => job.Department.Name, new { @class = "form-control" })
+        </dd>
+        <dd>
+            <i class="glyphicon glyphicon-briefcase"></i>
+            @Html.Label("Job", "Job Title", new { @class = "control-label" })
+            @Html.DisplayFor(m => job.Title, new { @class = "form-control" })
+        </dd>
+    </dl>
+    <dl>
+            <dd>
+                Skills
+            </dd>
+            <dd>
+                <ul>
+                    @for (var j = 0; j < job.JobSkills.Count(); ++j)
+                    {
+                        var found = false;
+                        for (int i = 0; i < Model.addedSkills.Count(); ++i)
+                        {
+                            if (job.JobSkills.ElementAt(j).Skill.Name == Model.addedSkills.ElementAt(i).Name)
+                            {
+                                found = true;
+                                countSkills[i] = 1;
+                                countJobSkills[j] = 1;
+                                break;
+                            }
+                        }
+
+                        if (found)
+                        {
+                            <li class="matching-ability">
+                                @Html.DisplayFor(modelItem => job.JobSkills.ElementAt(j).Skill.Name)
+                            </li>
+                        }
+                    }
+                    @for (int i = 0; i < Model.addedSkills.Count(); ++i)
+                    {
+                        if (countSkills[i] != 1)
+                        {
+                            <li class="personal-ability">
+                                @Html.DisplayFor(modelItem => Model.addedSkills.ElementAt(i).Name)
+                            </li>
+                        }
+                    }
+                    @for (var j = 0; j < job.JobSkills.Count(); ++j)
+                    {
+                        if (countJobSkills[j] != 1)
+                        {
+                            <li class="ability">
+                                @Html.DisplayFor(modelItem => job.JobSkills.ElementAt(j).Skill.Name)
+                            </li>
+                        }
+                    }
+                </ul>
+            </dd>
+    </dl>
+    <dl>
+            <dd>
+                Education
+            </dd>
+            <dd>
+                <ul>
+                    @for (var i = 0; i < Model.userEducation.Count(); ++i)
+                    {
+                        var found = false;
+                        foreach (var study in job.JobStudies)
+                        {
+                            if (study.Study.Degree == Model.userEducation.ElementAt(i).Study.Degree && study.Study.Specialty == Model.userEducation.ElementAt(i).Study.Specialty)
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (found)
+                        {
+                            <li class="matching-ability" id="short-education-button@(i)" onclick="changeEducationButton(@(i))">
+                                @Html.DisplayName(Model.userEducation.ElementAt(i).Study.Degree)
+                            </li>
+                            <li class="matching-ability" id="education-button@(i)" onclick="changeEducationButton(@(i))" style="display:none">
+                                @Html.DisplayName(Model.userEducation.ElementAt(i).Study.Specialty + " @" + Model.userEducation.ElementAt(i).Institution)
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="ability" id="short-education-button@(i)" onclick="changeEducationButton(@(i))">
+                                @Html.DisplayName(Model.userEducation.ElementAt(i).Study.Degree)
+                            </li>
+                            <li class="ability" id="education-button@(i)" onclick="changeEducationButton(@(i))" style="display:none">
+                                @Html.DisplayName(Model.userEducation.ElementAt(i).Study.Specialty + " @" + Model.userEducation.ElementAt(i).Institution)
+                            </li>
+                        }
+
+                    }
+                </ul>
+            </dd>
+    </dl>
+    <dl>
+            <dd>
+                Past Jobs
+            </dd>
+            <dd>
+                <ul>
+                    @foreach (var pastJob in Model.addedPastJobs)
+                    {
+                        <li>
+                            <b>@Html.DisplayFor(m => pastJob.Position, new { @class = "form-control" })</b>
+                            @("@")
+                            @Html.DisplayFor(m => pastJob.Company, new { @class = "form-control" })
+                            @("(")
+                            @Html.DisplayName(pastJob.StartDate.Date.ToString("MMMM yyyy"))
+                            @(" - ")
+                            @Html.DisplayName(pastJob.EndDate.Date.ToString("MMMM yyyy"))
+                            @(")")
+                        </li>
+                    }
+                </ul>
+            </dd>
+    </dl>
+</div>
+<div id="legend-div">
+    <dl>
+        <dd>
+            <h4>Legend</h4>
+            <ul>
+                <li class="dot" id="matching-dot"></li>
+                <li>checked requirement</li>
+                <li class="dot" id="personal-dot"></li>
+                <li>extra skill</li>
+                <li class="dot"></li>
+                <li>unchecked requirement</li>
+            </ul>
+        </dd>
+    </dl>
+</div>
+
+<style>
+    @@media(max-width: 992px) {
+        #content-grid {
+            margin:0 !important;
+            margin-top:3vw !important;
+            grid-template-columns: repeat(2, minmax(45%, 1fr)) !important;
+            grid-gap: 4rem !important;
+        }
+
+            #content-grid > dl:nth-child(n),
+            #content-grid > dl > dd > button {
+                font-size: 15px;
+            }
+
+                #content-grid > dl:nth-child(n) > dd:first-child {
+                    font-size: x-large;
+                }
+    }
+    @@media(max-width:800px){
+        #content-grid > dl:nth-child(n),
+        #content-grid > dl > dd > button,
+        #content-grid > div{
+            font-size: 12px;
+        }
+    }
+    @@media(max-width: 708px) {
+        #content-grid {
+            grid-template-columns: repeat(2, minmax(30%, 1fr));
+            grid-gap: 2rem !important;
+        }
+            #content-grid > dl:nth-child(n) > dd:first-child {
+                font-size: large;
+            }
+    }
+
+    @@media(max-width: 620px){
+        #content-grid {
+            grid-template-columns: repeat(1, minmax(20%, 2fr)) !important;
+        }
+
+            #content-grid > dl:nth-child(n),
+            #content-grid > dl > dd > button,
+            #content-grid > div {
+                font-size: 15px;
+            }
+    }
+
+    #content-grid {
+        margin: 3vw;
+        font-size: large;
+    }
+        #content-grid > dl {
+            /*height: 245px;*/
+            /*background: #f5f5f5;*/
+            border: 1px solid #f5f5f5; /*#838383;*/
+            border-radius: 10px;
+        }
+
+
+            #content-grid > dl:nth-child(4) > dd:nth-child(2) > ul > li {
+                margin: 5px;
+            }
+            /*#content-grid > dl:nth-child(n+2) > dd:nth-child(2){
+                height: 200px;
+                overflow: scroll;
+                overflow-x: hidden;
+            }*/
+            
+            #content-grid > dl:first-child > dd:nth-child(3), dd:nth-child(4), dd:nth-child(8) {
+                margin-left: 20px;
+            }
+
+            #content-grid > dl:first-child > dd:nth-child(2), dd:nth-child(3), dd:nth-child(7), dd:nth-child(8),
+            #legend-div> dl > dd > ul > li, #content-grid > dl:nth-child(2) > dd > ul > li,
+            #content-grid > dl:nth-child(3) > dd > ul > li, #content-grid > dl:nth-child(5) > dd > ul > li {
+                display: inline-block;
+            }
+            #content-grid > dl:nth-child(2) > dd > ul > li,
+            #content-grid > dl:nth-child(3) > dd > ul > li,
+            #content-grid > dl:nth-child(5) > dd > ul > li {
+                padding: 3px;
+            }
+        
+    .ability, .matching-ability, .personal-ability {
+        font-size: medium;
+        margin: 5px;
+        margin-right: 0;
+        border-radius: 5px;
+        border: 1px;
+        color: #ffffff;
+    }
+
+    .matching-ability, #matching-dot {
+        background-color: forestgreen;
+    }
+
+    .personal-ability, #personal-dot {
+        background-color: #0b91d4;
+    }
+
+    .ability, .dot {
+        background-color: #838383;
+    }
+
+    .dot {
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    #legend-div{
+        margin:4vw;
+    }
+
+        #legend-div > dl > dd > ul > li:nth-child(2n) {
+            margin-right: 10%;
+        }
+
+</style>
+@section Scripts{
+    <script>
+        function changeEducationButton(i) {
+            if (document.getElementById("short-education-button" + i).style.display == "inline-block") {
+                document.getElementById("short-education-button" + i).style.display = "none";
+                document.getElementById("education-button" + i).style.display = "inline-block";
+            }
+            else {
+                document.getElementById("short-education-button" + i).style.display = "inline-block";
+                document.getElementById("education-button" + i).style.display = "none";
+            }
+        }
+    </script>
+    }

@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Workplace_v2._2.Models.Department">
+    <Position X="0.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAgAAAAEAAAQQACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Department.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Workplace_v2._2.Models.ApplicationUser">
+    <Position X="8" Y="2.25" Width="2" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAEUFACAAAAAAAEAAAEAAAAAAJAAAGAQAACAAAACg=</HashCode>
+      <FileName>Models\IdentityModels.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="CandidateAnswers" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Workplace_v2._2.Models.Job">
+    <Position X="3.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAQAAAAAAAggEAAAAAAAAAAEAAEAAAECoAAAIAAAAA=</HashCode>
+      <FileName>Models\Job.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Department" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="JobSkills" />
+      <Property Name="JobStudies" />
+      <Property Name="Interviews" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Workplace_v2._2.Models.JobSkill">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAQAAAAAAAAAAAAAAAAAAAAIAACAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\JobSkill.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Workplace_v2._2.Models.Answer">
+    <Position X="5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAACAAAAAAAAAgAAAAAAAAAAAABAAAEAAAACAQAAAA=</HashCode>
+      <FileName>Models\Answer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Workplace_v2._2.Models.Question">
+    <Position X="11" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAACAAAAAAACAAAAAAAAAAACAAAAUAAACAQAAAA=</HashCode>
+      <FileName>Models\Question.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Creator" />
+      <Property Name="Job" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Answers" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Workplace_v2._2.Models.Interview">
+    <Position X="11" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQCCAAAAAAAAgAIAAAAAAAAABDAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Models\Interview.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Candidate" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Workplace_v2._2.Models.JobStudy">
+    <Position X="2.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQwAAAAAAAAAAAAAAABAAAAAACAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\JobStudy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Workplace_v2._2.Models.Study">
+    <Position X="5.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAAAAAAAAQAAAGAAAAAAAAAAAAABA=</HashCode>
+      <FileName>Models\Study.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="JobStudies" />
+      <Property Name="Educations" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Workplace_v2._2.Models.Skill">
+    <Position X="0.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAQAAAAAQQAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Skill.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="JobSkills" />
+      <Property Name="CandidateSkills" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Workplace_v2._2.Models.PastJob">
+    <Position X="9.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAgAABAIAAAAAAABEAAQAA=</HashCode>
+      <FileName>Models\PastJob.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Workplace_v2._2.Models.Experience">
+    <Position X="8" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAEBA=</HashCode>
+      <FileName>Models\Experience.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Candidate" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Educations" />
+      <Property Name="PastJobs" />
+      <Property Name="CandidateSkills" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Workplace_v2._2.Models.Education">
+    <Position X="5.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAQAAABAAAAAAAIAAAAAAAAAAAQAQ=</HashCode>
+      <FileName>Models\Education.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Workplace_v2._2.Models.CandidateSkill">
+    <Position X="0.5" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAEAAAAAAAAAAIQAAAAAAAAAAQAA=</HashCode>
+      <FileName>Models\CandidateSkill.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

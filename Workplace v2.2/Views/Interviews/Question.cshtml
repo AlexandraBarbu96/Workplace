@@ -1,0 +1,85 @@
+﻿@model Workplace_v2._2.Models.Answer
+@using Microsoft.AspNet.Identity
+@{
+    string QuestionNumber = HttpContext.Current.Session["QuestionNumber" + User.Identity.GetUserId()].ToString();
+}
+
+@*@using (Html.BeginForm("SubmitAnswer", "Interviews", FormMethod.Post, new { @class = "form-horizontal", name = "questionForm", role = "form", enctype = "multipart/form-data" }))
+*@
+{
+    <div>
+        <h4>Answer</h4>
+        <hr />
+        <dl class="dl-horizontal">
+
+            <dt>
+                @Html.Label("", QuestionNumber + ". ", new { })
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Question.QuestionText)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.AnswerText)
+            </dt>
+
+            <dd>
+                @Html.TextBoxFor(model => model.AnswerText)
+            </dd>
+
+            @Html.HiddenFor(qa => Model.AnswerId)
+
+            @Html.HiddenFor(qa => Model.Question.CreatorId)
+            @Html.HiddenFor(qa => Model.Question.DomainId)
+            @Html.HiddenFor(qa => Model.Question.QuestionId)
+            @Html.HiddenFor(qa => Model.Question.QuestionText)
+
+
+            @Html.HiddenFor(qa => Model.InterviewId)
+            @Html.HiddenFor(qa => Model.QuestionId)
+
+            @Html.HiddenFor(qa => Model.AnswerScore)
+            @Html.HiddenFor(qa => Model.AnswerText)
+        </dl>
+    </div>
+
+    @*
+    @Html.AntiForgeryToken()
+    <td class="form-actions no-color">
+        <input type="submit" name="action:Save Answer & Go To Next Question" value="Save Answer & Go To Next Question" class="btn btn-default"/>
+    </td>
+    <td class="form-actions no-color">
+        <input type="submit" name="action:Submit Answers" value="Submit Answers" class="btn btn-default" />
+    </td>
+    *@
+}
+@*
+    @using (Html.BeginForm("SubmitInterview", "Interviews", new { requestAnswer = Model.AnswerText }, FormMethod.Post, new { @class = "form-horizontal", name = "questionForm", role = "form", enctype = "multipart/form-data" }))
+    {
+
+        @Html.HiddenFor(qa => Model.AnswerId)
+
+        @Html.HiddenFor(qa => Model.Question.CreatorId)
+        @Html.HiddenFor(qa => Model.Question.DomainId)
+        @Html.HiddenFor(qa => Model.Question.QuestionId)
+        @Html.HiddenFor(qa => Model.Question.QuestionText)
+
+
+        @Html.HiddenFor(qa => Model.InterviewId)
+        @Html.HiddenFor(qa => Model.QuestionId)
+
+        @Html.HiddenFor(qa => Model.AnswerScore)
+        @Html.HiddenFor(qa => Model.AnswerText)
+        @Html.AntiForgeryToken()
+        <td class="form-actions no-color">
+            <input type="submit" value="Submit Answers" class="btn btn-default" />
+        </td>
+    }*@
+@*
+       <script>
+        function func() {
+            @(Session["IsDone"] = true);
+        }
+    </script>
+*@

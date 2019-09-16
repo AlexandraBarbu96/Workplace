@@ -1,0 +1,18 @@
+﻿@using Workplace_v2._2.Models;
+@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "Register";
+    ApplicationDbContext db = new ApplicationDbContext();
+    var Model = (CandidateViewModel)HttpContext.Current.Session["candidateModel" + Session.SessionID];
+}
+@using (Html.BeginForm("RegisterCandidateSubmit", "Account", FormMethod.Post, new { id = "registerForm", @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+{
+    <br />
+    @Html.Partial("~/Views/Account/PersonalInfoPartial.cshtml", Model.Candidate)
+    @Html.Partial("~/Views/Account/SkillsPartial.cshtml", Model)
+}
+@section Style{
+
+    }
+@section Scripts{
+    }

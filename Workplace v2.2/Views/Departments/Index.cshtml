@@ -1,0 +1,166 @@
+﻿@model IEnumerable<Workplace_v2._2.Models.Department>
+@using Microsoft.AspNet.Identity
+@using Workplace_v2._2.Models;
+@{
+    ViewBag.Title = "Departments";
+    ApplicationDbContext db = new ApplicationDbContext();
+    DepartmentViewModel departmentModel = (DepartmentViewModel)HttpContext.Current.Session["departmentModel" + Session.SessionID];
+    var newPassword = departmentModel.NewSupervisor.Password;
+    if(Session["oldDepartmentModel" + Session.SessionID] != null)
+    {
+        var oldDepartmentModel = (DepartmentViewModel)HttpContext.Current.Session["oldDepartmentModel" + Session.SessionID];
+        departmentModel.Name = oldDepartmentModel.Name;
+        departmentModel.NewSupervisor = oldDepartmentModel.NewSupervisor;
+        departmentModel.NewSupervisor.Password = newPassword;
+        Session.Remove("oldDepartmentModel" + Session.SessionID);
+    }
+    var skill = new Skill();
+    if(Session["skillModel" + Session.SessionID] != null)
+    {
+        skill = (Skill)HttpContext.Current.Session["skillModel" + Session.SessionID];
+        Session.Remove("skillModel" + Session.SessionID);
+    }
+    var study = new Study();
+    if(Session["studyModel" + Session.SessionID] != null)
+    {
+        study = (Study)HttpContext.Current.Session["studyModel" + Session.SessionID];
+        Session.Remove("studyModel" + Session.SessionID);
+    }
+}
+<article id="tabs-min" class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
+    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+        <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active">
+            <a href="#departments" onclick="editTabHide()">
+                Departments
+            </a>
+        </li>
+        <li class="ui-state-default ui-corner-top">
+            <a href="#add-department" title="Add New Department" onclick="editTabHide()">
+                <span class="glyphicon glyphicon-plus"></span>
+            </a>
+        </li>
+        <li class="ui-state-default ui-corner-top">
+            <a href="#skills" onclick="editTabHide()">
+                Skills
+            </a>
+        </li>
+        <li class="ui-state-default ui-corner-top">
+            <a href="#studies" onclick="editTabHide()">
+                Studies
+            </a>
+        </li>
+        @foreach (var department in Model)
+        {
+            <li class="ui-state-default ui-corner-top" style="display:none" id="editTab@(department.DepartmentId)">
+                <a href="#tabs-min-@(department.DepartmentId)" id="editTabLink@(department.DepartmentId)" title="Edit @(department.Name) department">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                </a>
+            </li>
+        }
+    </ul>
+
+
+    <div id="departments" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide">
+        @if (Model.Any())
+        {
+            <div class="grid" id="user-grid">
+                @foreach (var department in Model)
+                {
+                    <dl>
+                        <dd class="panel-heading">
+                            @Html.ActionLink(department.Name, "Details", "Departments", new { id = department.DepartmentId }, new { id = department.DepartmentId })
+                        </dd>
+                        <dd class="panel-body">
+                            <i class="glyphicon glyphicon-user"></i> <b>Supervisor:</b> @department.Admin.FirstName @department.Admin.LastName
+                        </dd>
+                        <dd class="panel-footer">
+                            <a href="@Url.Action("Create", "Jobs",new { id = department.DepartmentId })">
+                                <span class="glyphicon glyphicon-plus" title="Create Job"></span>
+                            </a>
+                            <a href="javascript:document.getElementById('editTabLink@(department.DepartmentId)').click()" onclick="editTabShow(@department.DepartmentId)">
+                                <span class="glyphicon glyphicon-pencil" title="Edit @(department.Name) department"></span>
+                            </a>
+                            @using (Html.BeginForm("Delete", "Departments", new { id = department.DepartmentId, url = Url.Action("Create", "Departments", routeValues: null) }, FormMethod.Post, new { @id = "deleteForm" + department.DepartmentId, role = "deleteForm", enctype = "multipart/form-data", style = "display:inline-block" }))
+                            {
+                                @Html.HttpMethodOverride(HttpVerbs.Delete)
+                                @Html.AntiForgeryToken()
+                                <a href="javascript:document.getElementById('deleteForm@(department.DepartmentId)').submit()" onclick="return confirm('Are you sure you want to delete this department?');">
+                                    <span class="glyphicon glyphicon-trash" title="Delete @(department.Name) department"></span>
+                                </a>
+                            }
+                        </dd>
+                    </dl>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="grid" id="content-grid">
+                <dl>
+                    <dd style="text-align:center">
+                        @("No departments.")
+                    </dd>
+                </dl>
+            </div>
+        }
+    </div>
+    <div id="add-department" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide">
+        @Html.Partial("~/Views/Departments/CreatePartial.cshtml", departmentModel)
+    </div>
+    <div id="skills" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide">
+        @Html.Partial("~/Views/Departments/SkillsPartial.cshtml", skill)
+    </div>
+    <div id="studies" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide">
+        @Html.Partial("~/Views/Departments/StudiesPartial.cshtml", study)
+    </div>
+    @foreach (var department in Model)
+    {
+        <div id="tabs-min-@(department.DepartmentId)" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide">
+            @Html.Partial("~/Views/Departments/EditPartial.cshtml", new DepartmentViewModel { EditedDepartmentId = department.DepartmentId, AdminId = department.AdminId, Name = department.Name, NewSupervisor = departmentModel.NewSupervisor })
+        </div>
+    }
+</article>
+@section Style{
+    <style>
+        #content-grid {
+            grid-template-columns: 1fr;
+            margin: 2vw;
+        }
+
+        #user-grid > dl > dd:first-child > a {
+            font-size: xx-large;
+        }
+
+            #user-grid > dl > dd:first-child > a:hover {
+                text-decoration: none;
+                color: #0b91d4;
+            }
+        #user-grid > dl > dd:nth-child(3){
+            align-content:flex-end;
+        }
+    </style>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+}
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#tabs-min").tabs();
+            
+        });
+        function editTabShow(id) {
+            document.getElementById("editTab" + id).style.display = "block";
+        }
+
+        function editTabHide() {
+            var classesNodeList = document.querySelectorAll("article > ul > li:nth-child(n+5)");
+            classesNodeList.forEach(function (li) {
+                li.style.display = "none";
+            });
+        }
+    </script>
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,79 @@
+﻿@model Workplace_v2._2.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Add User";
+    bool isEdit = (bool)HttpContext.Current.Session["isEdit" + Session.SessionID];
+    int departmentId = 0;
+    if(HttpContext.Current.Session["departmentId" + Session.SessionID] != null)
+    {
+        departmentId = (int)HttpContext.Current.Session["departmentId" + Session.SessionID];
+    }
+}
+<ol class="breadcrumb">
+    <li><h3>@ViewBag.Title</h3></li>
+</ol>
+@if (isEdit)
+{
+    @Html.ActionLink("❮ Edit department", "Edit", "Departments", new { id = departmentId }, new { @class = "btn btn-default", @style = "display:inline-block" })
+
+}
+else
+{
+    @Html.ActionLink("❮ Edit department", "Create", "Departments", new { }, new { @class = "btn btn-default", @style = "display:inline-block" })
+
+}
+@using (Html.BeginForm("CreateSupervisor", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Password)
+    @Html.HiddenFor(m => m.ConfirmPassword)
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <br />
+    <div class="form-group">
+        <div class="row col-sm-12">
+            <div class="col-sm-4">
+                <i class="glyphicon glyphicon-user"></i>
+                @Html.Label("FirstName", "First Name", new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+            </div>
+            <div class="col-sm-4">
+                @Html.Label("LastName", "Last Name", new { @class = "control-label", @style = "margin-left:-7rem" })
+                @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", @style = "margin-left:-7rem" })
+            </div>
+            <div class="col-sm-4">
+                @Html.Label("UserName", "Username", new { @class = "control-label", @style = "margin-left:-14rem" })
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @style = "margin-left:-14rem" })
+            </div>
+        </div>
+        <div class="row col-sm-12">
+            <div class="col-sm-4">
+                <i class="glyphicon glyphicon-envelope"></i>
+                @Html.Label("Email", "Email", new { @class = "control-label", @style = "margin-top:2.5rem" })
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row col-sm-12">
+            <div class="col-sm-4">
+                <i class="glyphicon glyphicon-phone"></i>
+                @Html.Label("PhoneNumber", "Phone Number", new { @class = "control-label", @style = "margin-top:2.5rem" })
+                @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="col-md-offset-1 col-md-12" , style="margin-top:2.5rem">
+            <input type="submit" class="btn btn-default" value="Submit" />
+        </div>
+    </div>
+}
+
+
+@section Scripts {
+    @*
+           <script type="text/javascript">
+            $(document).ready(function () {
+                $('#Role').change(function () {
+                    $('#panel1').show();
+                });
+            });
+        </script>
+    *@
+
+}

@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Workplace_v2._2.Models.Interview>
+
+@foreach (var interview in Model)
+{
+<dl>
+    <dd class="panel-heading">
+        <i class="glyphicon glyphicon-user"></i> <b>User Name:</b>
+        @if (User.IsInRole("Administrator"))
+        {
+            @Html.ActionLink(interview.Candidate.UserName, "Details", "Users", new { id = interview.Candidate.Id }, new { })
+        }
+        else
+        {
+            @interview.Candidate.UserName
+        }
+    </dd>
+    <dd class="panel-body">
+        <i class="glyphicon glyphicon-briefcase"></i> <b>Job:</b> @interview.Job.Title
+    </dd>
+    @if (interview.IsDone == true && interview.IsGraded == false)
+    {
+        <dd class="panel-footer">
+            <a href="@Url.Action("Details", "Answers", new { idi = interview.InterviewId })">
+                <span class="glyphicon glyphicon-tasks" title="See Answers"></span>
+            </a>
+        </dd>
+    }
+    else
+    {
+        <dd class="panel-footer" style="padding:10px 15px;height:20px">
+        </dd>
+    }
+</dl>
+}
+<style>
+    .dot {
+        height: 5px;
+        width: 5px;
+    }
+</style>

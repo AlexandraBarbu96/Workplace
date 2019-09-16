@@ -1,0 +1,167 @@
+﻿@model Workplace_v2._2.Models.NewsViewModel
+@{
+    var educationCount = 0;
+}
+@for (var i = 0; i < Model.Candidates.Count(); ++i)
+{
+    <dl>
+        <dd>
+            @Model.Candidates[i].UserName is a new candidate for @Model.Candidates[i].CandidateInterview.Job.Title job.
+            @using (Html.BeginForm("Delete", "Users", new { id = Model.Candidates[i].Id, url = Url.Action("Index", "News", routeValues: null) }, FormMethod.Post, new { @id = "deleteUserForm", role = "form", enctype = "multipart/form-data" }))
+            {
+                @Html.HttpMethodOverride(HttpVerbs.Delete)
+                @Html.AntiForgeryToken()
+                <a href="javascript:document.getElementById('deleteUserForm').submit()" title="Delete Account">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </a>
+            }
+            @using (Html.BeginForm("Candidates", "News", new { cn = i }, FormMethod.Post, new { @id = "activateUserForm", role = "form", enctype = "multipart/form-data" }))
+            {
+                @Html.HttpMethodOverride(HttpVerbs.Put)
+                @Html.AntiForgeryToken()
+                <a href="javascript:document.getElementById('activateUserForm').submit()" title="Activate Account">
+                    <span class="glyphicon glyphicon-ok"></span>
+                </a>
+            }
+            <form>
+                <a onclick="showAll(@(i))">
+                    <span class="glyphicon glyphicon-chevron-down" id="up-down@(i)"></span>
+                </a>
+            </form>
+        </dd>
+        <dd id="userSkills@(i)" style="display:none">
+            @Html.Label("Skills: ", htmlAttributes: new { @class = "control-label" })
+            <ul>
+                @{
+                    var countJobSkills = new int[Model.Candidates[i].CandidateInterview.Job.JobSkills.Count()];
+                    var countSkills = new int[Model.Experiences[i].CandidateSkills.Count()];
+                }
+                @for (var j = 0; j < Model.Candidates[i].CandidateInterview.Job.JobSkills.Count(); ++j)
+                {
+                    var found = false;
+
+                    for (int k = 0; k < Model.Experiences[i].CandidateSkills.Count(); ++k)
+                    {
+                        if (Model.Candidates[i].CandidateInterview.Job.JobSkills.ElementAt(j).Skill.Name == Model.Experiences[i].CandidateSkills.ElementAt(k).Skill.Name)
+                        {
+                            found = true;
+                            countSkills[k] = 1;
+                            countJobSkills[j] = 1;
+                            break;
+                        }
+                    }
+
+                    if (found)
+                    {
+                        <li class="matching-ability">
+                            @Html.DisplayFor(modelItem => Model.Candidates[i].CandidateInterview.Job.JobSkills.ElementAt(j).Skill.Name)
+                        </li>
+                    }
+                }
+                @for (int k = 0; k < Model.Experiences[i].CandidateSkills.Count(); ++k)
+                {
+                    if (countSkills[k] != 1)
+                    {
+                        <li class="personal-ability">
+                            @Html.DisplayFor(modelItem => Model.Experiences[i].CandidateSkills.ElementAt(k).Skill.Name)
+                        </li>
+                    }
+                }
+                @for (var j = 0; j < Model.Candidates[i].CandidateInterview.Job.JobSkills.Count(); ++j)
+                {
+                    if (countJobSkills[j] != 1)
+                    {
+                        <li class="ability">
+                            @Html.DisplayFor(modelItem => Model.Candidates[i].CandidateInterview.Job.JobSkills.ElementAt(j).Skill.Name)
+                        </li>
+                    }
+                }
+            </ul>
+        </dd>
+        <dd id="userEducation@(i)" style="display:none">
+            @Html.Label("Education: ", htmlAttributes: new { @class = "control-label" })
+            <ul>
+                @for (var j = 0; j < Model.Experiences[i].Educations.Count(); ++j)
+                {
+                    var found = false;
+                    foreach (var study in Model.Candidates[i].CandidateInterview.Job.JobStudies)
+                    {
+                        if (study.Study.Degree == Model.Experiences[i].Educations.ElementAt(j).Study.Degree && study.Study.Specialty == Model.Experiences[i].Educations.ElementAt(j).Study.Specialty)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found)
+                    {
+                        <li class="matching-ability" id="short-education-button@(j + educationCount)" onclick="changeEducationButton(@(j + educationCount))">
+                            @Html.DisplayName(Model.Experiences[i].Educations.ElementAt(j).Study.Degree)
+                        </li>
+                        <li class="matching-ability" id="education-button@(j + educationCount)" onclick="changeEducationButton(@(j + educationCount))" style="display:none">
+                            @Html.DisplayName(Model.Experiences[i].Educations.ElementAt(j).Study.Specialty + " @" + Model.Experiences[i].Educations.ElementAt(j).Institution)
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="ability" id="short-education-button@(j + educationCount)" onclick="changeEducationButton(@(j + educationCount))">
+                            @Html.DisplayName(Model.Experiences[i].Educations.ElementAt(j).Study.Degree)
+                        </li>
+                        <li class="ability" id="education-button@(j + educationCount)" onclick="changeEducationButton(@(j + educationCount))" style="display:none">
+                            @Html.DisplayName(Model.Experiences[i].Educations.ElementAt(j).Study.Specialty + " @" + Model.Experiences[i].Educations.ElementAt(j).Institution)
+                        </li>
+                    }
+                }
+            </ul>
+            @{
+                educationCount += Model.Experiences[i].Educations.Count();
+            }
+        </dd>
+        <dd id="userPastJobs@(i)" style="display:none">
+            @Html.Label("Past Jobs: ", htmlAttributes: new { @class = "control-label" })
+            <ul>
+                @foreach (var pastJob in Model.Experiences[i].PastJobs.ToList())
+                {
+                    <li>
+                        <b>@Html.DisplayFor(m => pastJob.Position, new { @class = "form-control" })</b>
+                        @("@")
+                        @Html.DisplayFor(m => pastJob.Company, new { @class = "form-control" })
+                        @("(")
+                        @Html.DisplayName(pastJob.StartDate.Date.ToString("MMMM yyyy"))
+                        @(" - ")
+                        @Html.DisplayName(pastJob.EndDate.Date.ToString("MMMM yyyy"))
+                        @(")")
+                    </li>
+                }
+            </ul>
+        </dd>
+    </dl>
+}
+
+<script type="text/javascript">
+    function showAll(i) {
+        var form = document.getElementById("up-down" + i);
+        if (form.className == "glyphicon glyphicon-chevron-down") {
+            document.getElementById("up-down" + i).className = "glyphicon glyphicon-chevron-up";
+            document.getElementById("userSkills" + i).style.display = "block";
+            document.getElementById("userEducation" + i).style.display = "block";
+            document.getElementById("userPastJobs" + i).style.display = "block";
+
+        }
+        else {
+            document.getElementById("up-down" + i).className = "glyphicon glyphicon-chevron-down";
+            document.getElementById("userSkills" + i).style.display = "none";
+            document.getElementById("userEducation" + i).style.display = "none";
+            document.getElementById("userPastJobs" + i).style.display = "none";
+        }
+    }
+    function changeEducationButton(i) {
+        if (document.getElementById("short-education-button" + i).style.display == "inline-block") {
+            document.getElementById("short-education-button" + i).style.display = "none";
+            document.getElementById("education-button" + i).style.display = "inline-block";
+        }
+        else {
+            document.getElementById("short-education-button" + i).style.display = "inline-block";
+            document.getElementById("education-button" + i).style.display = "none";
+        }
+    }
+</script>

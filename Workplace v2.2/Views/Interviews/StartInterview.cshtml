@@ -1,0 +1,296 @@
+﻿@model Workplace_v2._2.Models.InterviewViewModel
+@using Workplace_v2._2.Models;
+@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "Start Interview";
+    //string UserId = User.Identity.GetUserId();
+    var endtime = (DateTime)HttpContext.Current.Session["TimeExpire" + Session.SessionID];
+    var timeRemaining = TimeSpan.FromTicks(endtime.Ticks - DateTime.UtcNow.Ticks).TotalSeconds;
+}
+<span id="time-span" class="site-button">
+    <span id="minRemaining"></span> : <span id="secRemaining"></span>
+</span>
+@using (Html.BeginForm("SubmitInterview", "Interviews", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+{
+    <div class="grid" id="content-grid">
+        <dl>
+            <dd>
+                <div>
+                    <b>
+                        @("1.")
+                        @Html.DisplayFor(model => model.Answer1.Question.Text, new { @class = "form-control" })
+                    </b>
+                </div>
+            </dd>
+            <dd>
+                <div>
+                    @Html.TextAreaFor(model => model.Answer1.Text, new { @id = "answer", @class = "form-control" })
+                </div>
+            </dd>
+        </dl>
+        <dl>
+            <dd>
+                <div>
+                    <b>
+                        @("2.")
+                        @Html.DisplayFor(model => model.Answer2.Question.Text, new { @class = "form-control" })
+                    </b>
+                </div>
+            </dd>
+            <dd>
+                <div>
+                    @Html.TextAreaFor(model => model.Answer2.Text, new { @id = "answer", @class = "form-control" })
+                </div>
+            </dd>
+        </dl>
+        <dl>
+            <dd>
+                <div>
+                    <b>
+                        @("3.")
+                        @Html.DisplayFor(model => model.Answer3.Question.Text, new { @class = "form-control" })
+                    </b>
+                </div>
+            </dd>
+            <dd>
+                <div>
+                    @Html.TextAreaFor(model => model.Answer3.Text, new { @id = "answer", @class = "form-control" })
+                </div>
+            </dd>
+        </dl>
+        <dl>
+            <dd>
+                <div>
+                    <b>
+                        @("4.")
+                        @Html.DisplayFor(model => model.Answer4.Question.Text, new { @class = "form-control" })
+                    </b>
+                </div>
+            </dd>
+            <dd>
+                <div>
+                    @Html.TextAreaFor(model => model.Answer4.Text, new { @id = "answer", @class = "form-control" })
+                </div>
+            </dd>
+        </dl>
+        <dl>
+            <dd>
+                <div>
+                    <b>
+                        @("5.")
+                        @Html.DisplayFor(model => model.Answer5.Question.Text, new { @class = "form-control" })
+                    </b>
+                </div>
+            </dd>
+            <dd>
+                <div>
+                    @Html.TextAreaFor(model => model.Answer5.Text, new { @id = "answer", @class = "form-control" })
+                </div>
+            </dd>
+        </dl>
+        <dl>
+            <dd>
+                <div>
+                    <b>
+                        @("6.")
+                        @Html.DisplayFor(model => model.Answer6.Question.Text, new { @class = "form-control" })
+                    </b>
+                </div>
+            </dd>
+            <dd>
+                <div>
+                    @Html.TextAreaFor(model => model.Answer6.Text, new { @id = "answer", @class = "form-control" })
+                </div>
+            </dd>
+        </dl>
+        <dl>
+            <dd>
+                <div>
+                    <b>
+                        @("7.")
+                        @Html.DisplayFor(model => model.Answer7.Question.Text, new { @class = "form-control" })
+                    </b>
+                </div>
+            </dd>
+            <dd>
+                <div>
+                    @Html.TextAreaFor(model => model.Answer7.Text, new { @id = "answer", @class = "form-control" })
+                </div>
+            </dd>
+        </dl>
+        <dl>
+            <dd>
+                <div>
+                    <b>
+                        @("8.")
+                        @Html.DisplayFor(model => model.Answer8.Question.Text, new { @class = "form-control" })
+                    </b>
+                </div>
+            </dd>
+            <dd>
+                <div>
+                    @Html.TextAreaFor(model => model.Answer8.Text, new { @id = "answer", @class = "form-control" })
+                </div>
+            </dd>
+        </dl>
+        <dl>
+            <dd>
+                <div>
+                    <b>
+                        @("9.")
+                        @Html.DisplayFor(model => model.Answer9.Question.Text, new { @class = "form-control" })
+                    </b>
+                </div>
+            </dd>
+            <dd>
+                <div>
+                    @Html.TextAreaFor(model => model.Answer9.Text, new { @id = "answer", @class = "form-control" })
+                </div>
+            </dd>
+        </dl>
+        <dl>
+            <dd>
+                <div>
+                    <b>
+                        @("10.")
+                        @Html.DisplayFor(model => model.Answer10.Question.Text, new { @class = "form-control" })
+                    </b>
+                </div>
+            </dd>
+            <dd>
+                <div>
+                    @Html.TextAreaFor(model => model.Answer10.Text, new { @id = "answer", @class = "form-control" })
+                </div>
+            </dd>
+        </dl>
+
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => Model.Answer1.QuestionId)
+        @Html.HiddenFor(m => Model.Answer2.QuestionId)
+        @Html.HiddenFor(m => Model.Answer3.QuestionId)
+        @Html.HiddenFor(m => Model.Answer4.QuestionId)
+        @Html.HiddenFor(m => Model.Answer5.QuestionId)
+        @Html.HiddenFor(m => Model.Answer6.QuestionId)
+        @Html.HiddenFor(m => Model.Answer7.QuestionId)
+        @Html.HiddenFor(m => Model.Answer8.QuestionId)
+        @Html.HiddenFor(m => Model.Answer9.QuestionId)
+        @Html.HiddenFor(m => Model.Answer10.QuestionId)
+        <div class="form-actions no-color">
+            <input id="submitinterview" type="submit" value="Submit Answers" class="site-button" onclick="go()" />
+        </div>
+    </div>
+
+}
+@section Style{
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-lite.css" rel="stylesheet">
+}
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-lite.js"></script>
+    <script>
+        $('textarea').summernote({
+            disableResizeEditor: true,
+            height:250,
+            toolbar: [
+                ['style', ['bold', 'italic', 'underline']],
+                ['font'],
+                ['para', ['ul', 'ol']]
+            ]
+        });
+    </script>
+}
+<style>
+    .body-content {
+        width: 100%;
+    }
+
+    #content-grid {
+        margin: 2vw;
+        grid-template-columns: 80%;
+        margin-left: 20%;
+    }
+
+        #content-grid > dl > dd:nth-child(2) > div {
+            margin: 3%;
+        }
+
+    @@media (max-width: 770px) {
+        #content-grid {
+            margin: 2vw;
+            grid-template-columns: 100%;
+            margin-left: 20%;
+        }
+
+        #time-span {
+            font-size: small !important;
+        }
+    }
+
+    #submitinterview {
+        padding: 5px;
+        margin-left: 40%;
+        margin-bottom: 3%;
+    }
+
+    #answer {
+        display: inline-block;
+        height: 250px;
+        max-width: 100%;
+    }
+
+    #time-span {
+        font-size: larger;
+        padding: 10px;
+        position: fixed;
+        margin: 3% 3%;
+    }
+
+        #time-span:hover {
+            background-color: #0b91d4;
+            color: white;
+        }
+</style>
+<script>
+    window.onbeforeunload = function () { return ""; };
+    function go() {
+        window.onbeforeunload = function () { return; };
+    }
+
+    var remSeconds = @timeRemaining;
+    var secondsCounter = remSeconds % 60;
+
+    function formatNumber(number) {
+        if (number < 10) return '0' + number;
+        else return '' + number;
+    }
+
+    function startTick() {
+        document.getElementById("secRemaining").innerText = formatNumber(parseInt(secondsCounter));
+        document.getElementById("minRemaining").innerText = formatNumber(parseInt(remSeconds / 60));
+
+        var _tick = setInterval(function () {
+            if (remSeconds - 1 > 0) {
+                remSeconds = remSeconds - 1;
+                secondsCounter = secondsCounter - 1;
+                if (secondsCounter < 0) {
+                    secondsCounter = 60 + secondsCounter;
+                }
+                document.getElementById("secRemaining").innerText = formatNumber(parseInt(secondsCounter));
+                document.getElementById("minRemaining").innerText = formatNumber(parseInt(remSeconds / 60));
+                if (secondsCounter == 0) {
+                    secondsCounter = 60;
+                }
+            }
+            else {
+                alert('The time has expired.');
+                clearInterval(_tick);
+                document.getElementById('submitinterview').dispatchEvent(new MouseEvent("click"));
+                //window.location.href = $('.className').attr('href');
+                // @(Url.Action("SubmitInterview","Interviews",new { requestAnswer = Model}));
+                //window.location.href = "/Interviews/SubmitInterview";
+            }
+
+        }, 1000)
+    }
+    startTick();
+</script>

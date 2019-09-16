@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Workplace_v2._2.Models.Question>
+@for (var i = 0; i < Model.Count(); ++i)
+{
+    <dl>
+        <dd>
+            @Model.ElementAt(i).Creator.UserName added a new question for the @Model.ElementAt(i).Job.Title job:
+            @using (Html.BeginForm("DeleteQuestion", "Questions", new { id = Model.ElementAt(i).QuestionId, url = Url.Action("Index", "News", routeValues: null) }, FormMethod.Post, new { @id = "deleteQuestionForm", role = "form", enctype = "multipart/form-data" }))
+            {
+                @Html.HttpMethodOverride(HttpVerbs.Delete)
+                @Html.AntiForgeryToken()
+                <a href="javascript:document.getElementById('deleteQuestionForm').submit()" title="Delete Question">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </a>
+            }
+            @using (Html.BeginForm("Requests", "News", new { qn = i }, FormMethod.Post, new { @id = "approveQuestionForm", role = "form", enctype = "multipart/form-data" }))
+            {
+                @Html.HttpMethodOverride(HttpVerbs.Put)
+                @Html.AntiForgeryToken()
+                <a href="javascript:document.getElementById('approveQuestionForm').submit()" title="Approve Question">
+                    <span class="glyphicon glyphicon-ok"></span>
+                </a>
+            }
+        </dd>
+        <dd>@Model.ElementAt(i).Text</dd>
+    </dl>
+
+}

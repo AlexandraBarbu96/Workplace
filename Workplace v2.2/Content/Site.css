@@ -1,0 +1,401 @@
+﻿body {
+    padding-top: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-size:150%;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+    min-height: 619px;
+}
+
+.article {
+    font-family: 'Nunito', sans-serif;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.navbar, .navbar div, .navbar-header, .navbar-inverse {
+    font-size:100%;
+    background-color: #464343;
+}
+div .navbar-brand{
+    font-size:250%;
+}
+    .navbar-inverse .navbar-nav > li > a {
+        color: #fff;
+        /*font-family: 'Nunito', sans-serif;*/
+        font-size: 120%;
+    }
+
+        .navbar-inverse .navbar-nav > li > a:hover,
+        .navbar-inverse .navbar-nav > li > a:focus {
+            color: #0b91d4;
+            }
+
+.navbar {
+    background-color: #464343;
+    max-height:40px;
+    height:40px;
+    /*font-family: 'Nunito', sans-serif;*/
+}
+
+.navbar-nav > li > a {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    line-height: 20px;
+}
+
+.navbar-inverse .navbar-nav > li > a{
+    color:white;
+}
+
+    .navbar-inverse .navbar-nav > li > a:hover,
+    .navbar-inverse .navbar-nav > li > a:focus {
+        color: #0b91d4;
+    }
+
+    .dropdown {
+        max-height: 40px;
+        min-height: 40px;
+        color: white;
+    }
+
+.dropdown-menu {
+    border: 0px;
+    background-color: #464343;
+    padding: 0px;
+    position: relative;
+    color: white;
+}
+
+    .dropdown-menu > li > a:hover,
+    .dropdown-menu > li > a:focus
+    {
+        color: #464343;
+        background-color: #0b91d4;
+    }
+
+.dropdown-toggle, .dropdown-toggle a {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    position: absolute;
+    width: 160px;
+    height: 160px;
+}
+
+    .dropdown-toggle img {
+        width: 160px;
+        height: 160px;
+        margin-left: -15px;
+        margin-top: -10px;
+    }
+
+@media (max-width: 925px) {
+    .navbar {
+        font-size:90%;
+    }
+}
+@media (max-width: 797px) {
+    .navbar {
+        font-size: 85%;
+    }
+    div .navbar-brand {
+        display: none;
+    }
+}
+@media (min-width: 992px) {
+    .animate {
+        animation-duration: 1s;
+        -webkit-animation-duration: 1s;
+        animation-fill-mode: both;
+        -webkit-animation-fill-mode: both;
+    }
+}
+
+@media (max-width: 770px){
+    .home-container{
+        display:none;
+    }
+
+    .navbar-nav .dropdown{
+        display:none;
+    }
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateY(1rem);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0rem);
+        opacity: 1;
+    }
+
+    0% {
+        transform: translateY(1rem);
+        opacity: 0;
+    }
+}
+
+@-webkit-keyframes slideIn {
+    0% {
+        -webkit-transform: transform;
+        -webkit-opacity: 0;
+    }
+
+    100% {
+        -webkit-transform: translateY(0);
+        -webkit-opacity: 1;
+    }
+
+    0% {
+        -webkit-transform: translateY(1rem);
+        -webkit-opacity: 0;
+    }
+}
+
+.slideIn {
+    -webkit-animation-name: slideIn;
+    animation-name: slideIn;
+}
+
+
+.home-container {
+    color: white;
+    background-color: #0b91d4;
+    height: 50vw;
+    width: 100%;
+}
+
+    .home-container p {
+        text-align: center;
+        font-size: 320%;
+        padding-top: 10%;
+    }
+
+    .home-container ul{
+        width: 500px;
+        height:100px;
+        margin: auto;
+        list-style-position: inside;
+        text-align: justify;
+        font-size:120%;
+    }
+
+/*.home-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}*/
+
+#footer-grid {
+    padding: 50px;
+    text-align: center;
+    color: #ffffff;
+    height: 300px;
+    background-color: #464343;
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 2rem;
+}
+
+    #footer-grid > dl:first-child {
+        padding: 2rem;
+        text-align: right;
+        border-right: 1px solid white;
+    }
+
+    #footer-grid > dl:nth-child(2) {
+        text-align: left;
+    }
+
+.site-button{
+    font-family: 'Nunito', sans-serif !important;
+    border: none;
+    color: #ffffff;
+    background-color: #0b91d4;
+    justify-content: center;
+    padding: 3px;
+}
+
+.site-button:hover {
+    text-decoration:none;
+    background-color: #ffffff;
+    color: #0b91d4;
+    }
+.ability, .matching-ability, .personal-ability {
+    font-size: medium;
+    margin: 5px;
+    margin-right: 0;
+    border-radius: 5px;
+    border: 1px;
+    color: #ffffff;
+}
+
+.matching-ability, #matching-dot {
+    background-color: forestgreen;
+}
+
+.personal-ability, #personal-dot {
+    background-color: #0b91d4;
+}
+
+.ability, .dot {
+    background-color: #838383;
+}
+
+.dot {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+#content-grid {
+    margin: 4vw;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(50%, 2fr));
+    grid-gap: 5rem;
+}
+
+    #content-grid > dl {
+        background: #ffffff;
+        border-radius: 1rem;
+        border: 1px solid #f5f5f5;
+    }
+
+            #content-grid > dl > dd:first-child {
+                font-size: large;
+                text-align: left;
+                background-color: #f5f5f5;
+                color: #838383;
+                padding: 1.5rem;
+            }
+        #content-grid > dl > dd {
+            padding: 0.5rem 0.5rem 1.5rem 1.5rem;
+        }
+#user-grid {
+    margin: 2vw;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(20%, 2fr));
+    grid-gap: 6rem;
+}
+
+    #user-grid > dl {
+        border: 1px solid #f5f5f5;
+        border-radius: 5px;
+        background: #ffffff;
+    }
+
+        #user-grid > dl > dd:nth-child(3) {
+            text-align: center;
+            background-color: #f5f5f5;
+        }
+
+            #user-grid > dl > dd:nth-child(3) a {
+                text-decoration: none;
+            }
+
+            #user-grid > dl > dd:nth-child(3) span {
+                padding-left: 15px;
+                padding-right: 15px;
+                color: #838383;
+            }
+
+                #user-grid > dl > dd:nth-child(3) span:hover {
+                    color: #0b91d4;
+                }
+
+@media(max-width: 1200px) {
+    #user-grid {
+        margin: 2vw;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(20%, 2fr));
+        grid-gap: 6rem;
+    }
+}
+
+@media(max-width: 992px) {
+    #user-grid {
+        margin: 2vw;
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-gap: 6rem;
+    }
+}
+
+@media(max-width: 770px) {
+    #user-grid {
+        margin: 2vw;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(20%, 2fr));
+        grid-gap: 6rem;
+    }
+}
+
+@media(max-width: 530px) {
+    #user-grid {
+        margin: 2vw;
+        display: grid;
+        grid-template-columns: repeat(1, minmax(20%, 2fr));
+        grid-gap: 6rem;
+    }
+}
+
+div #tabs-min-1, div #tabs-min-2, div #tabs-min-3 {
+    font-family: 'Nunito',sans-serif;
+}
+
+#tabs-min {
+    margin-top: 10px;
+    font-family: inherit;
+    background: transparent;
+    border: none;
+}
+
+    #tabs-min .ui-widget-header {
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid #c0c0c0;
+        -moz-border-radius: 0px;
+        -webkit-border-radius: 0px;
+        border-radius: 0px;
+    }
+
+    #tabs-min .ui-tabs-nav .ui-state-default {
+        background: transparent;
+        border: none;
+    }
+
+    #tabs-min .ui-tabs-nav .ui-state-active {
+        background: transparent url(../img/uiTabsArrow.png) no-repeat bottom center;
+        border: none;
+    }
+
+    #tabs-min .ui-tabs-nav .ui-state-default a {
+        color: #c0c0c0;
+    }
+
+    #tabs-min .ui-tabs-nav .ui-state-active a {
+        color: #0b91d4;
+    }

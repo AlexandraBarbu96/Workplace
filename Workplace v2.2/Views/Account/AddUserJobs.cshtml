@@ -1,0 +1,168 @@
+﻿@model Workplace_v2._2.Models.PastJob
+@using Workplace_v2._2.Models;
+@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "Job Experience";
+    var Model = (ExperienceViewModel)HttpContext.Current.Session["experienceModel" + Session.SessionID];
+    var currentDate = DateTime.Now;
+    var date = currentDate.ToString("mm/dd/yyyy");
+}
+<div class="grid" id="content-grid">
+    <dl>
+        <dd>
+            @Html.ActionLink("❮ Edit Education", "AddUserEducation", "Account", new { }, new { id = "first-dd-button", @class = "site-button" })
+            @using (Html.BeginForm("RegisterConfirmed", "Account", FormMethod.Post, new { id = "confirmedRegisterForm", @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                <a href="javascript:document.getElementById('confirmedRegisterForm').submit()" id="first-dd-button">Submit ❯</a>
+            }
+        </dd>
+        <dd class="form-group">
+            @using (Html.BeginForm("AddUserJobs", "Account", FormMethod.Post, new { @class = "form-horizontal", @id = "formId", role = "form", enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="row">
+                    <div class="col-sm-3">
+                        <i class="glyphicon glyphicon-briefcase"></i>
+                        @Html.LabelFor(model => model.Company, "Company/Place", htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Company, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Company, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.LabelFor(model => model.Position, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Position, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Position, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-1">
+                        @Html.Label("Since: ", new { @class = "control-label" })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control", @type = "text", @id = "startdateplacer", @onchange = "SaveStartDate()" } })
+                        @Html.TextBox("StartDate", "", new { @id = "startdate", @style = "display:none" })
+                        @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-sm-1">
+                        @Html.Label("Until: ", new { @class = "control-label" })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control", @type = "text", @id = "enddateplacer", @onchange = "SaveEndDate()" } })
+                        @Html.TextBox("EndDate", "", new { @id = "enddate", @style = "display:none" })
+                        @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="submit" value="Add" class="site-button" />
+                    </div>
+                </div>
+            }
+        </dd>
+    </dl>
+    <dl>
+        <dd>
+            @("Added Jobs")
+        </dd>
+        <dd>
+            <ul>
+                @for (int i = 0; i < Model.addedPastJobs.Count(); ++i)
+                {
+                    <li>
+                        <b>@Html.DisplayName(Model.addedPastJobs[i].Position)</b>
+                        @("@")
+                        @Html.DisplayName(Model.addedPastJobs[i].Company)
+                        @("(")
+                        @Html.DisplayName(Model.addedPastJobs[i].StartDate.Date.ToString("MMMM d yyyy"))
+                        @(" - ")
+                        @Html.DisplayName(Model.addedPastJobs[i].EndDate.Date.ToString("MMMM d yyyy"))
+                        @(")")
+                        <a href="~/Account/RemoveJob/?nj=@i" class="glyphicon glyphicon-remove-circle" data_toggle="tooltip" data_placement="bottom" title="Remove"></a>
+                    </li>
+                }
+            </ul>
+        </dd>
+    </dl>
+</div>
+@section Style{
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <style>
+        #content-grid {
+            margin: 2vw;
+            grid-gap: 2rem;
+            width: 100%;
+            grid-template-columns: 1fr;
+        }
+
+        #first-dd-button {
+            background-color: #f5f5f5;
+            color: #838383;
+        }
+
+            #first-dd-button:hover {
+                background-color: #f5f5f5;
+                color: #0b91d4;
+            }
+
+        div .row:last-child {
+            margin-bottom: 3%;
+        }
+
+        #content-grid > dl > dd:first-child > form {
+            float: right;
+        }
+
+        #content-grid > dl:last-child > dd > ul > li > a {
+            margin-left: 5px;
+            color: #838383;
+        }
+        #content-grid > dl:last-child > dd > ul > li > a:hover{
+            color: #0b91d4;
+        }
+        #content-grid > dl > dd > ul > li > a {
+            margin-left: 5px;
+            color: #ffffff;
+        }
+            #content-grid > dl > dd > ul > li > a:hover,
+            #first-dd-button:hover {
+                text-decoration: none;
+            }
+
+        .ability, .matching-ability, .personal-ability {
+            padding: 3px;
+            display: inline-block;
+            font-size: medium;
+            margin: 5px;
+            margin-right: 0;
+            border-radius: 5px;
+            border: 1px;
+            color: #ffffff;
+        }
+    </style>
+}
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#startdateplacer,#enddateplacer").datepicker({
+                dateFormat: "mm/dd/yy",
+                minDate: "-100Y",
+                maxDate: "+1Y",
+                changeMonth: true,
+                changeYear: true,
+            });
+            $("#startdateplacer,#enddateplacer").datepicker("setDate", "01/01/2019");
+        });
+        function SaveEndDate() {
+            var date = document.getElementById("enddateplacer").value;
+            document.getElementById("enddate").value = "";
+            document.getElementById("enddate").value = date;
+        }
+        function SaveStartDate() {
+            var date = document.getElementById("startdateplacer").value;
+            document.getElementById("startdate").value = "";
+            document.getElementById("startdate").value = date;
+        }
+    </script>
+}

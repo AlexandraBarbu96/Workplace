@@ -1,0 +1,158 @@
+﻿@model Workplace_v2._2.Models.Study
+@using Workplace_v2._2.Models;
+@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "Studies";
+    var Model = (JobViewModel)HttpContext.Current.Session["jobModel" + Session.SessionID];
+}
+<div class="grid" id="content-grid">
+    <dl>
+        <dd>
+            @Html.ActionLink("❮ Edit skills", "AddJobSkills", "Jobs", new { id = Model.JobId }, new { @class = "site-button" })
+            @using (Html.BeginForm("FinishAddingJob", "Jobs", FormMethod.Post, new { @style = "display:inline-block" }))
+            {
+                @Html.AntiForgeryToken();
+                <input type="submit" value="Submit job ❯" class="site-button" />
+            }
+        </dd>
+    </dl>
+</div>
+<div class="grid" id="content-grid">
+    <dl>
+        <dd>
+            Studies to Add
+        </dd>
+        <dd>
+            <ul>
+                @foreach (var item in Model.studiesToAdd)
+                {
+                    <li class="ability">
+                        @Html.DisplayFor(modelItem => item.Specialty)
+                        <a href="~/Jobs/AddStudy/?ids=@item.StudyId" class="glyphicon glyphicon-plus-sign" data_toggle="tooltip" data_placement="bottom" title="Add Study"></a>
+                    </li>
+                }
+            </ul>
+        </dd>
+    </dl>
+    <dl>
+        <dd>
+            Added Studies
+        </dd>
+        <dd>
+            <ul>
+                @foreach (var item in Model.addedStudies)
+                {
+                    <li class="ability">
+                        @Html.DisplayFor(modelItem => item.Specialty)
+                        <a href="~/Jobs/RemoveStudy/?ids=@item.StudyId" class="glyphicon glyphicon-remove-circle" data_toggle="tooltip" data_placement="bottom" title="Remove Study"></a>
+                    </li>
+                }
+                @for (var i = 0; i < Model.newStudies.Count(); ++i)
+                {
+                    <li class="ability">
+                        @Html.DisplayFor(modelItem => Model.newStudies[i].Specialty)
+                        <a href="~/Jobs/RemoveNewStudy/?ns=@i" class="glyphicon glyphicon-remove-circle" data_toggle="tooltip" data_placement="bottom" title="Remove Study"></a>
+                    </li>
+                }
+            </ul>
+        </dd>
+    </dl>
+</div>
+<div class="grid" id="content-grid">
+    <dl>
+        <dd>
+            @Html.DisplayName("Other:")
+        </dd>
+        <dd>
+            @using (Html.BeginForm("AddNewStudy", "Jobs", FormMethod.Post, new { id = "newStudyForm", @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+            {
+                <div class="row-sm-12">
+                    <div class="col-sm-4">
+                        @Html.Label("Degree", new { @class = "control-label" })
+                        @Html.DropDownListFor(m => m.Degree, new SelectList(ViewBag.Degrees, "Value", "Text"), "---Select---", new { @class = "form-control", @style = "display:inline-block" })
+                        @Html.ValidationMessageFor(m => m.Degree, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.Label("Specialty", new { @class = "control-label"})
+                        @Html.TextBoxFor(m => m.Specialty, new { @class = "form-control", style = "display:inline-block" })
+                        @Html.ValidationMessageFor(m => m.Specialty, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.AntiForgeryToken()
+                        <a href="javascript:document.getElementById('newStudyForm').submit()" style="display:inline-block" title="Add new study" class="site-button"><span class="glyphicon glyphicon-plus"></span></a>
+                    </div>
+                </div>
+             }
+        </dd>
+    </dl>
+</div>
+
+<style>
+    @@media(max-width:1200px){
+        #content-grid:nth-child(2) {
+            width: 100%;
+            grid-template-columns: 1fr;
+        }
+            #content-grid:nth-child(2) > dl:first-child {
+                margin-left: 0px !important;
+            }
+    }
+    #content-grid {
+        margin: 2vw;
+        grid-gap: 2rem;
+    }
+
+        #content-grid:first-child,
+        #content-grid:nth-child(3) {
+            width: 100%;
+            grid-template-columns: 1fr;
+        }
+
+        #content-grid:nth-child(2) > dl:first-child {
+            margin-left: 8%;
+        }
+
+    .site-button {
+        background-color: #f5f5f5;
+        color: #838383;
+    }
+
+        .site-button:hover {
+            background-color: #f5f5f5;
+            color: #0b91d4;
+        }
+
+    #content-grid:first-child > dl > dd:first-child > form {
+        float: right;
+    }
+
+    #content-grid > dl > dd > ul > li > a {
+        margin-left: 5px;
+        color: #ffffff;
+    }
+
+        #content-grid > dl > dd > ul > li > a:hover {
+            text-decoration: none;
+        }
+    #content-grid:last-child > dl > dd:nth-child(2) > form > div {
+        margin:3%;
+    }
+    div > .site-button,
+    div > .site-button:hover {
+        background-color: #ffffff;
+    }
+            .ability {
+                padding: 3px;
+                display: inline-block;
+                font-size: medium;
+                margin: 5px;
+                margin-right: 0;
+                border-radius: 5px;
+                border: 1px;
+                color: #ffffff;
+            }
+
+        .ability:hover {
+            background-color: #0b91d4;
+        }
+</style>

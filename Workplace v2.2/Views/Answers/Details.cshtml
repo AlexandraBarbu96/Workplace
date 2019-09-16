@@ -1,0 +1,275 @@
+﻿@model Workplace_v2._2.Models.InterviewViewModel
+@using Workplace_v2._2.Models;
+@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "Answers";
+    string UserId = User.Identity.GetUserId();
+}
+
+@using (Html.BeginForm("SubmitScore", "Answers", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+{
+<div class="grid" id="content-grid">
+    <dl>
+        <dd>
+            <div>
+                @("1.")
+                @Html.DisplayFor(model => model.Answer1.Question.Text, new { @class = "form-control" })
+            </div>
+        </dd>
+        <dd>
+            <div>
+                @Html.Raw(HttpUtility.HtmlDecode(Model.Answer1.Text))
+            </div>
+        </dd>
+        <dd>
+            <div id="score">
+                @Html.Label("Score: ", new { @class = "control-label" })
+                <input class="form-control" data-val="true" data-val-number="The field Score must be a number." data-val-range="Value for Score must be between 0 and 10." max="10" min="0" data-val-required="The Score field is required." id="Answer1_Score" name="Answer1.Score" type="number" value="0">
+            </div>
+        </dd>
+    </dl>
+    <dl>
+        <dd>
+            <div>
+                @("2.")
+                @Html.DisplayFor(model => model.Answer2.Question.Text, new { @class = "form-control" })
+            </div>
+        </dd>
+        <dd>
+            <div>
+                @Html.Raw(HttpUtility.HtmlDecode(Model.Answer2.Text))
+            </div>
+        </dd>
+        <dd>
+            <div id="score">
+                @Html.Label("Score: ", new { @class = "control-label" })
+                <input class="form-control" data-val="true" data-val-number="The field Score must be a number." data-val-range="Value for Score must be between 0 and 10." max="10" min="0" data-val-required="The Score field is required."  id="Answer2_Score" name="Answer2.Score" type="number" value="0">
+            </div>
+        </dd>
+    </dl>
+    <dl>
+        <dd>
+            <div>
+                @("3.")
+                @Html.DisplayFor(model => model.Answer3.Question.Text, new { @class = "form-control" })
+            </div>
+        </dd>
+        <dd>
+            <div>
+                @Html.Raw(HttpUtility.HtmlDecode(Model.Answer3.Text))
+            </div>
+        </dd>
+        <dd>
+            <div id="score">
+                @Html.Label("Score: ", new { @class = "control-label" })
+                <input class="form-control" data-val="true" data-val-number="The field Score must be a number." data-val-range="Value for Score must be between 0 and 10." max="10" min="0" data-val-required="The Score field is required." id="Answer3_Score" name="Answer3.Score" type="number" value="0">
+            </div>
+        </dd>
+    </dl>
+    <dl>
+        <dd>
+            <div>
+                @("4.")
+                @Html.DisplayFor(model => model.Answer4.Question.Text, new { @class = "form-control" })
+            </div>
+        </dd>
+        <dd>
+            <div>
+                @Html.Raw(HttpUtility.HtmlDecode(Model.Answer4.Text))
+            </div>
+        </dd>
+        <dd>
+            <div id="score">
+                @Html.Label("Score: ", new { @class = "control-label" })
+                <input class="form-control" data-val="true" data-val-number="The field Score must be a number." data-val-range="Value for Score must be between 0 and 10." max="10" min="0" data-val-required="The Score field is required." id="Answer4_Score" name="Answer4.Score" type="number" value="0">
+            </div>
+        </dd>
+    </dl>
+    <dl>
+        <dd>
+            <div>
+                @("5.")
+                @Html.DisplayFor(model => model.Answer5.Question.Text, new { @class = "form-control" })
+            </div>
+        </dd>
+        <dd>
+            <div>
+                @Html.Raw(HttpUtility.HtmlDecode(Model.Answer5.Text))
+            </div>
+        </dd>
+        <dd>
+            <div id="score">
+                @Html.Label("Score: ", new { @class = "control-label" })
+                <input class="form-control" data-val="true" data-val-number="The field Score must be a number." data-val-range="Value for Score must be between 0 and 10." max="10" min="0" data-val-required="The Score field is required." id="Answer5_Score" name="Answer5.Score" type="number" value="0">
+            </div>
+        </dd>
+    </dl>
+    <dl>
+        <dd>
+            <div>
+                @("6.")
+                @Html.DisplayFor(model => model.Answer6.Question.Text, new { @class = "form-control" })
+            </div>
+        </dd>
+        <dd>
+            <div>
+                @Html.Raw(HttpUtility.HtmlDecode(Model.Answer6.Text))
+            </div>
+        </dd>
+        <dd>
+            <div id="score">
+                @Html.Label("Score: ", new { @class = "control-label" })
+                <input class="form-control" data-val="true" data-val-number="The field Score must be a number." data-val-range="Value for Score must be between 0 and 10." max="10" min="0" data-val-required="The Score field is required." id="Answer6_Score" name="Answer6.Score" type="number" value="0">
+            </div>
+        </dd>
+    </dl>
+    <dl>
+        <dd>
+            <div>
+                @("7.")
+                @Html.DisplayFor(model => model.Answer7.Question.Text, new { @class = "form-control" })
+            </div>
+        </dd>
+        <dd>
+            <div>
+                @Html.Raw(HttpUtility.HtmlDecode(Model.Answer7.Text))
+            </div>
+        </dd>
+        <dd>
+            <div id="score">
+                @Html.Label("Score: ", new { @class = "control-label" })
+                <input class="form-control" data-val="true" data-val-number="The field Score must be a number." data-val-range="Value for Score must be between 0 and 10." max="10" min="0" data-val-required="The Score field is required." id="Answer7_Score" name="Answer7.Score" type="number" value="0">
+            </div>
+        </dd>
+    </dl>
+    <dl>
+        <dd>
+            <div>
+                @("8.")
+                @Html.DisplayFor(model => model.Answer8.Question.Text, new { @class = "form-control" })
+            </div>
+        </dd>
+        <dd>
+            <div>
+                @Html.Raw(HttpUtility.HtmlDecode(Model.Answer8.Text))
+            </div>
+        </dd>
+        <dd>
+            <div id="score">
+                @Html.Label("Score: ", new { @class = "control-label" })
+                <input class="form-control" data-val="true" data-val-number="The field Score must be a number." data-val-range="Value for Score must be between 0 and 10." max="10" min="0" data-val-required="The Score field is required." id="Answer8_Score" name="Answer8.Score" type="number" value="0">
+            </div>
+        </dd>
+    </dl>
+    <dl>
+        <dd>
+            <div>
+                @("9.")
+                @Html.DisplayFor(model => model.Answer9.Question.Text, new { @class = "form-control" })
+            </div>
+        </dd>
+        <dd>
+            <div>
+                @Html.Raw(HttpUtility.HtmlDecode(Model.Answer9.Text))
+            </div>
+        </dd>
+        <dd>
+            <div id="score">
+                @Html.Label("Score: ", new { @class = "control-label" })
+                <input class="form-control" data-val="true" data-val-number="The field Score must be a number." data-val-range="Value for Score must be between 0 and 10." max="10" min="0" data-val-required="The Score field is required." id="Answer9_Score" name="Answer9.Score" type="number" value="0">
+            </div>
+        </dd>
+    </dl>
+    <dl>
+        <dd>
+            <div>
+                @("10.")
+                @Html.DisplayFor(model => model.Answer10.Question.Text, new { @class = "form-control" })
+            </div>
+        </dd>
+        <dd>
+            <div>
+                @Html.Raw(HttpUtility.HtmlDecode(Model.Answer10.Text))
+            </div>
+        </dd>
+        <dd>
+            <div id="score">
+                @Html.Label("Score: ", new { @class = "control-label" })
+                <input class="form-control" data-val="true" data-val-number="The field Score must be a number." data-val-range="Value for Score must be between 0 and 10." max="10" min="0" data-val-required="The Score field is required." id="Answer10_Score" name="Answer10.Score" type="number" value="0">
+            </div>
+        </dd>
+    </dl>
+
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => Model.InterviewId)
+    @Html.HiddenFor(m => Model.Answer1.AnswerId)
+    @Html.HiddenFor(m => Model.Answer2.AnswerId)
+    @Html.HiddenFor(m => Model.Answer3.AnswerId)
+    @Html.HiddenFor(m => Model.Answer4.AnswerId)
+    @Html.HiddenFor(m => Model.Answer5.AnswerId)
+    @Html.HiddenFor(m => Model.Answer6.AnswerId)
+    @Html.HiddenFor(m => Model.Answer7.AnswerId)
+    @Html.HiddenFor(m => Model.Answer8.AnswerId)
+    @Html.HiddenFor(m => Model.Answer9.AnswerId)
+    @Html.HiddenFor(m => Model.Answer10.AnswerId)
+    <div>
+        <input id="submitfinalscore" type="submit" value="Submit Score" class="site-button" />
+    </div>
+
+</div>
+}
+<style>
+    #content-grid {
+        margin: 2vw;
+        grid-template-columns: 1fr;
+    }
+
+        #content-grid > dl form > dd:first-child,
+        #content-grid > dl form > dd:nth-child(2),
+        #content-grid > dl form > dd:nth-child(3) {
+            margin-left: 10%;
+        }
+
+    #score, #submitfinalscore {
+        padding: 5px;
+        margin-left: 45%;
+        margin-bottom: 3%;
+        margin-top:3%;
+    }
+        #score > input {
+            display: inline-block;
+            width: 11%;
+        }
+
+    #content-grid > dl > dd:first-child > a:first-child {
+        margin-left: 30%;
+    }
+    @@media(max-width:1200px){
+        #score > input {
+            width: 15%;
+        }
+    }
+    @@media(max-width:992px) {
+        #content-grid > dl > dd:first-child > a:first-child {
+            margin-left: 0;
+        }
+        #score > input {
+            width: 20%;
+        }
+    }
+
+    @@media(max-width:660px){
+        #score > input {
+            width: 25%;
+        }
+    }
+    /*
+    #answer {
+        display: inline-block;
+        height: 300px;
+        max-width: 90%;
+    }
+    */
+</style>
+
+

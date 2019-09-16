@@ -1,0 +1,304 @@
+﻿@model Workplace_v2._2.Models.Department
+@using Workplace_v2._2.Models;
+@using Microsoft.AspNet.Identity
+@{
+    ApplicationDbContext db = new ApplicationDbContext();
+    var educationCount = 0;
+    var user = db.Users.Find(User.Identity.GetUserId());
+}
+<article id="tabs-min" class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
+    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+        <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active">
+            <a href="#jobs">
+                @Model.Name jobs
+            </a>
+        </li>
+        <li>
+            @if (User.IsInRole("Administrator") || (User.IsInRole("Supervisor") && Model.AdminId == user.Id))
+            {
+                <a href="~/Jobs/Create/?id=@Model.DepartmentId">
+                    <span class="glyphicon glyphicon-plus" title="Create Job"></span>
+                </a>
+            }
+        </li>
+    </ul>
+
+    <div id="jobs" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide">
+        @if (Model.Jobs.Any())
+        {
+            <script>
+                function changeurl(url) {
+                    location.href = url;
+                }
+            </script>
+            <div class="grid" id="content-grid">
+                @foreach (var item in Model.Jobs)
+                {
+                    <dl>
+                        <dd>
+                            @Html.ActionLink(item.Title, "Index", "Questions", new { id = item.JobId }, new { id = item.JobId, title = "See Job Questions" })
+                            @if (item.IsAvailable)
+                            {
+                                <span class="dot" id="matching-dot" title="Available"></span>
+                            }
+                            @if (User.IsInRole("Administrator") || user.Id == Model.AdminId)
+                            {
+                                if (!item.IsAvailable)
+                                {
+                                    using (Html.BeginForm("Delete", "Jobs", new { id = item.JobId, url = Url.Action("Details", "Departments", new { id = Model.DepartmentId }) }, FormMethod.Post, new { id = "deleteJobForm" + item.JobId, role = "form", enctype = "multipart/form-data", @style = "display:inline-block" }))
+                                    {
+                                        @Html.HttpMethodOverride(HttpVerbs.Delete)
+                                        @Html.AntiForgeryToken()
+                                        <a href="javascript:document.getElementById('deleteJobForm@(item.JobId)').submit()" title="Delete Job" onclick="return confirm('Are you sure you want to delete this job?');"><span class="glyphicon glyphicon-trash"></span></a>
+                                        <a href="~/Jobs/Edit/@item.JobId" title="Edit Job"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    }
+
+                                }
+                                if (item.IsAvailable || item.Questions.Count() >= 10)
+                                {
+                                    using (Html.BeginForm("ChangeAvailability", "Jobs", new { id = item.JobId, url = Url.Action("Details", "Departments", new { id = Model.DepartmentId }) }, FormMethod.Post, new { id = "availabilityForm" + item.JobId, role = "form", enctype = "multipart/form-data", @style = "display:inline-block" }))
+                                    {
+                                        @Html.HttpMethodOverride(HttpVerbs.Put)
+                                        @Html.AntiForgeryToken()
+
+                                        if (item.IsAvailable)
+                                        {
+                                            <a href="javascript:document.getElementById('availabilityForm@(item.JobId)').submit()" title="Make unavailable"><span class="glyphicon glyphicon-remove-circle"></span></a>
+                                        }
+                                        else
+                                        {
+                                            <a href="javascript:document.getElementById('availabilityForm@(item.JobId)').submit()" title="Make available"><span class="glyphicon glyphicon-ok-circle"></span></a>
+                                        }
+                                    }
+                                }
+                            }
+                        </dd>
+                        <dd>
+                            <b>@("Experience:")</b>
+                            @if (item.YearsOfExperience == "none")
+                            {
+                                <div class="label label-success">@item.YearsOfExperience</div>
+                            }
+                            else if (item.YearsOfExperience == "1-2 year(s) (Junior)")
+                            {
+                                <div class="label label-info">@item.YearsOfExperience</div>
+                            }
+                            else if (item.YearsOfExperience == "3-5 years")
+                            {
+                                <div class="label label-warning">@item.YearsOfExperience</div>
+                            }
+                            else
+                            {
+                                <div class="label label-danger">@item.YearsOfExperience</div>
+                            }
+                        </dd>
+                        <dd>
+                            <b>@("Job Description:")</b>
+                            @Html.Raw(HttpUtility.HtmlDecode(item.Description))
+                        </dd>
+                        @if (item.JobSkills.Any())
+                        {
+                            <dd>
+                                <b>@("Required Skills:")</b>
+                                @foreach (var skill in item.JobSkills)
+                                {
+                                    <div class="label label-default">
+                                        @Html.DisplayFor(modelItem => skill.Skill.Name)
+                                    </div>
+                                }
+                            </dd>
+                        }
+                        else
+                        {
+                            <dd>
+                                <div>
+                                    <b>@("No required skills.")</b>
+                                </div>
+                            </dd>
+                        }
+
+                        @if (item.JobStudies.Any())
+                        {
+                            <dd>
+                                <b>@("Recommended Education:")</b>
+                                @for (var i = 0; i < item.JobStudies.Count(); ++i)
+                                {
+                                    <div class="label label-default" id="short-education-button@(i + educationCount)" onclick="changeEducationButton(@(i + educationCount))">
+                                        @Html.DisplayName(item.JobStudies.ElementAt(i).Study.Degree)
+                                    </div>
+                                    <div class="label label-default" id="education-button@(i + educationCount)" onclick="changeEducationButton(@(i + educationCount))" style="display:none">
+                                        @Html.DisplayName(item.JobStudies.ElementAt(i).Study.Specialty)
+                                    </div>
+                                }
+                            </dd>
+                            educationCount += item.JobStudies.Count();
+                        }
+                        else
+                        {
+                            <dd>
+                                <div>
+                                    <b>@("No required studies.")</b>
+                                </div>
+                            </dd>
+                        }
+                    </dl>
+
+                }
+            </div>
+        }
+        else
+        {
+            <div class="panel" style="padding: 2vw;">
+                @("No jobs.")
+            </div>
+        }
+    </div>
+</article>
+@section Style{
+    <style>
+        #content-grid > dl {
+            width: 95%;
+        }
+
+            #content-grid > dl > dd:first-child > a:first-child {
+                font-size: 200%;
+            }
+
+            #content-grid > dl > dd:first-child > a,
+            #content-grid > dl > dd:first-child > form > a {
+                margin: 5px;
+                color: #838383;
+            }
+
+                #content-grid > dl > dd:first-child > a:hover,
+                #content-grid > dl > dd:first-child > form > a:hover {
+                    text-decoration: none;
+                    color: #0b91d4;
+                }
+
+                #content-grid > dl > dd:first-child > a:nth-child(n+2), form {
+                    float: right;
+                }
+
+            #content-grid > dl > dd:nth-child(n+2) {
+                margin: 2vw;
+                padding: 1vw;
+                text-align: justify;
+                font-size: 120%;
+            }
+
+            #content-grid > dl > dd:nth-child(3) {
+                max-height: 300px;
+                overflow: scroll;
+                overflow-x: hidden;
+            }
+
+            #content-grid > dl > dd:nth-child(n+4) {
+                height: 70px;
+            }
+
+                #content-grid > dl > dd:nth-child(n+4) > b,
+                #content-grid > dl > dd:nth-child(n+4) > div {
+                    float: left;
+                }
+        /*
+                            #content-grid > dl > dd > a {
+                                font-size: 120%;
+                                display: flex;
+                                margin: auto;
+                                width: 140px;
+                                margin-top: 15px;
+                                padding: 5px;
+                            }
+
+                                #content-grid > dl > dd > a:hover {
+                                    text-decoration: none;
+                                }
+                */
+        @@media(max-width: 1020px) {
+            #content-grid {
+                grid-template-columns: repeat(2, minmax(40%, 1fr));
+                grid-gap: 4rem;
+            }
+
+                #content-grid > dl > dd:first-child {
+                    font-size: 150%;
+                }
+        }
+
+        @@media(max-width: 992px) {
+            #content-grid {
+                grid-template-columns: repeat(2, minmax(35%, 1fr));
+            }
+
+                #content-grid > dl > dd:first-child {
+                    font-size: 130%;
+                }
+        }
+
+        @@media(max-width: 800px) {
+            #content-grid {
+                grid-template-columns: repeat(2, minmax(30%, 1fr));
+                grid-gap: 2rem;
+            }
+
+                #content-grid > dl > dd:first-child {
+                    font-size: 120%;
+                }
+        }
+
+        @@media(max-width: 770px) {
+            #content-grid {
+                grid-template-columns: repeat(1, minmax(20%, 1fr));
+            }
+
+                #content-grid > dl > dd:first-child {
+                    font-size: 100%;
+                }
+        }
+
+
+
+        .label {
+            margin: 3px;
+            font-size: medium;
+            font-weight: normal;
+        }
+
+        .label-default {
+            background-color: #f5f5f5;
+            color: #838383;
+        }
+
+        .dot {
+            height: 10px;
+            width: 10px;
+        }
+    </style>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+}
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#tabs-min").tabs();
+            $("li:nth-child(2) a").unbind('click');
+        });
+        
+    </script>
+    <script type="text/javascript">
+        function changeEducationButton(i) {
+            if (document.getElementById("short-education-button" + i).style.display == "inline-block") {
+                document.getElementById("short-education-button" + i).style.display = "none";
+                document.getElementById("education-button" + i).style.display = "inline-block";
+            }
+            else {
+                document.getElementById("short-education-button" + i).style.display = "inline-block";
+                document.getElementById("education-button" + i).style.display = "none";
+            }
+        }
+    </script>
+}

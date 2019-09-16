@@ -1,0 +1,248 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="icon" type="image/gif/png" href="~/img/title-logo.png">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200&display=swap" rel="stylesheet">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @using Microsoft.AspNet.Identity;
+    @using Workplace_v2._2.Models;
+    @using Workplace_v2._2.Controllers;
+    @{
+        ApplicationDbContext db = new ApplicationDbContext();
+        var user = db.Users.Find(HttpContext.Current.User.Identity.GetUserId());
+
+        var countNews = 0;
+        if (Request.IsAuthenticated)
+        {
+            if (user.IsInRole("Administrator") || user.IsInRole("Supervisor"))
+            {
+                var countRequests = db.Questions.Where(q => q.Approved == false).Count();
+                var countInterviews = db.Interviews.Where(i => i.Candidate.IsActive && i.IsDone && !i.IsGraded).Count();
+                var countCandidates = db.Users.Where(c => c.IsActive == false && c.CandidateInterview.IsGraded == false).Count();
+
+                if (user.IsInRole("Supervisor"))
+                {
+                    countRequests -= db.Questions.Where(q => q.Job.DepartmentId != user.AdminDepartmentId && q.Approved == false).Count();
+                    countInterviews -= db.Interviews.Where(i => i.Job.DepartmentId != user.AdminDepartmentId && i.Candidate.IsActive && i.IsDone && !i.IsGraded).Count();
+                    countCandidates -= db.Users.Where(c => c.CandidateInterview.Job.DepartmentId != user.AdminDepartmentId && c.IsActive == false && c.CandidateInterview.IsGraded == false).Count();
+                }
+
+                countNews = countRequests + countInterviews + countCandidates;
+            }
+        }
+
+    }
+    <style>
+    </style>
+</head>
+<body>
+    <!--Inverted Navbar Start Here-->
+    <!--<nav> tag  start with classes .navbar and .navbar-inverse -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <img src="~/img/logo.png" />
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right animate slideIn" aria-labelledby="navbarDropdown">
+                            @if (User.IsInRole("Administrator"))
+                            {
+                                <li class="dropdown-item">
+                                    <a href="@Url.Action("Index", "News")" style="color:white">
+                                        <span class="glyphicon glyphicon-asterisk" style="color:white"></span>
+                                        News
+                                        @if (countNews != 0)
+                                        {
+                                            <span class="badge">@countNews</span>
+                                        }
+                                        </a>
+                                </li>
+                                <li class="dropdown-item">
+                                    <a href="@Url.Action("Create", "Account")" style="color:white">
+                                        <span class="glyphicon glyphicon-user" style="color:white"></span>
+                                        Users
+                                    </a>
+                                </li>
+                                <li class="dropdown-item">
+                                    <a href="@Url.Action("Create", "Departments")" style="color:white">
+                                        <span class="glyphicon glyphicon-th" style="color:white"></span>
+                                        Departments
+                                    </a>
+                                </li>
+                            }
+                            else if (User.IsInRole("Supervisor"))
+                            {
+                                <li class="dropdown-item">
+                                    <a href="@Url.Action("Index", "News")" style="color:white">
+                                        <span class="glyphicon glyphicon-asterisk" style="color:white"></span>
+                                        News
+                                        @if (countNews != 0)
+                                        {
+                                            <span class="badge">@countNews</span>
+                                        }
+                                    </a>
+                                </li>
+                                <li class="dropdown-item">
+                                    <a href="@Url.Action("Details", "Departments", new { id = user.AdminDepartmentId })" style="color:white">
+                                        <span class="glyphicon glyphicon-th" style="color:white"></span>
+                                        Department
+                                    </a>
+                                </li>
+                            }
+                            else if (User.IsInRole("Candidate"))
+                            {
+                                var test = new ApplicationDbContext().Interviews.Where(i => i.CandidateId == user.Id).First();
+
+                                if (!test.IsDone)
+                                {
+                                    <li class="dropdown-item">
+                                        <a href="@Url.Action("StartInterview", "Interviews")" style="color:white" onclick="return confirm('Once you access this link, your interview will begin. If you try to leave the page without submitting, all progress will be lost. The interview cannot be restarted. Are you sure you want to proceed?');">
+                                            <span class="glyphicon glyphicon-tasks" style="color:white"></span>
+                                            Start Interview
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="dropdown-item">
+                                        <a href="@Url.Action("Index", "Answers")" style="color:white">
+                                            <span class="glyphicon glyphicon-list-alt" style="color:white"></span>
+                                            See Answers
+                                        </a>
+                                    </li>
+                                }
+                            }
+                            else if (User.IsInRole("Employee"))
+                            {
+                                <li class="dropdown-item">
+                                    <a href="@Url.Action("Details", "Departments", new { id = user.EmployeeDepartmentId})" style="color:white">
+                                        <span class="glyphicon glyphicon-th" style="color:white"></span>
+                                        Department
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </nav>
+    @*corpul din _HomeLayout.cshtml*@
+    <div class="home-container">
+        <p>Come join Workplace!</p>
+        <ul>
+            <li>You've got amazing opportunities lying ahead of you!</li>
+            <li>Check out the job offers down bellow</li>
+            <li>Choose something that is fit for you</li>
+            <li>Make working feel like home</li>
+        </ul>
+        <a class="animate slideIn" href="#jobs">Get Started</a>
+    </div>
+    <div id="jobs"></div>
+    <div>
+        @RenderBody()
+    </div>
+    <footer class="grid" id="footer-grid">
+        <dl>
+            <dd>
+                <h4>Contact</h4>
+            </dd>
+            <dd>
+                <p> +(401) 070 000 00 00</p>
+            </dd>
+            <dd>
+                <p>1 Flowers Street Bucharest, 00000</p>
+            </dd>
+        </dl>
+        <dl>
+            <dd>
+                <h4>Map</h4>
+            </dd>
+            <dd>
+                <div class="mapouter">
+                    <div class="gmap_canvas"><iframe width="300" height="150" id="gmap_canvas" src="https://maps.google.com/maps?q=university%20of%20bucharest&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe><a href="https://www.embedgooglemap.org">embedgooglemap.org</a></div>
+                    <style>
+                        .mapouter {
+                            position: relative;
+                            text-align: right;
+                            height: 150px;
+                            width: 300px;
+                        }
+
+                        .gmap_canvas {
+                            overflow: hidden;
+                            background: none !important;
+                            height: 150px;
+                            width: 300px;
+                        }
+                    </style>
+                </div>
+            </dd>
+            <dd>
+                <p>&copy; @DateTime.Now.Year - Workplace</p>
+            </dd>
+        </dl>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var message = '@ViewBag.message';
+            if (message) {
+                alert(message);
+            }
+        });
+    </script>
+    <style>
+        .home-container a {
+            color: #0b91d4;
+            font-size: 150%;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+            width: 140px;
+            margin-top: 15px;
+            padding: 5px;
+        }
+
+            .home-container a:hover {
+                text-decoration: none;
+                background-color: forestgreen;
+                color: #ffffff;
+            }
+
+        #jobs {
+            width: auto;
+            height: 40px;
+            background-color: #0b91d4;
+        }
+
+        @@media(max-width: 770px) {
+            #jobs {
+                display: none;
+            }
+        }
+    </style>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    @RenderSection("style", required: false)
+</body>
+</html> 

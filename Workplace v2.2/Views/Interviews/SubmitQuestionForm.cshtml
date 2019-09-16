@@ -1,0 +1,29 @@
+﻿@model Workplace_v2._2.Models.Answer
+@{
+    string QuestionNumber = ViewBag.QuestionNumber.ToString();
+}
+@using (Html.BeginForm("SubmitQuestionForm", "Interviews", new { answerToSubmit = Model, idi = Model.InterviewId, nqn = ViewBag.QuestionNumber + 1, TimeExpire = ViewBag.TimeExpire }, FormMethod.Post, new { @class = "form-horizontal", name = "questionForm", role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.HttpMethodOverride(HttpVerbs.Put)
+
+    @Html.Label("", QuestionNumber + ". ", new { })
+    @Html.DisplayFor(qa => Model.Question.QuestionText, new { @class = "form-control" })
+    @Html.TextBoxFor(qa => Model.AnswerText, new { @class = "form-control" })
+
+    @Html.HiddenFor(qa => Model.Question.CreatorId)
+    @Html.HiddenFor(qa => Model.Question.DomainId)
+    @Html.HiddenFor(qa => Model.Question.QuestionId)
+    @Html.HiddenFor(qa => Model.Question.QuestionText)
+
+
+    @Html.HiddenFor(qa => Model.InterviewId)
+    @Html.HiddenFor(qa => Model.QuestionId)
+    @Html.HiddenFor(qa => Model.AnswerId)
+    @Html.HiddenFor(qa => Model.AnswerScore)
+    @Html.HiddenFor(qa => Model.AnswerText)
+
+    @Html.AntiForgeryToken()
+    <td class="form-actions no-color">
+        <input type="submit" value="Next Question" class="btn btn-default" />
+    </td>
+}

@@ -1,0 +1,54 @@
+﻿@model Workplace_v2._2.Models.ApplicationUser
+@{
+    ViewBag.Title = Model.UserName;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="form-group">
+    <div class="row col-sm-12">
+        <div class="col-sm-4">
+            <i class="glyphicon glyphicon-user"></i>
+            @Html.Label("FirstName", "First Name", new { @class = "control-label" })
+            @Html.DisplayFor(m => m.FirstName, new { @class = "form-control" })
+        </div>
+        <div class="col-sm-4">
+            @Html.Label("LastName", "Last Name", new { @class = "control-label" })
+            @Html.DisplayFor(m => m.LastName, new { @class = "form-control" })
+        </div>
+        <div class="col-sm-4">
+            @Html.Label("UserName", "Username", new { @class = "control-label" })
+            @Html.DisplayFor(m => m.UserName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="row col-sm-12">
+        <div class="col-sm-4">
+            <i class="glyphicon glyphicon-envelope"></i>
+            @Html.Label("Email", "Email", new { @class = "control-label" })
+            @Html.DisplayFor(m => m.Email, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="row col-sm-12">
+        <div class="col-sm-4">
+            <i class="glyphicon glyphicon-phone"></i>
+            @Html.Label("PhoneNumber", "Phone Number", new { @class = "control-label" })
+            @Html.DisplayFor(m => m.PhoneNumber, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="row col-sm-12">
+        <div class="col-sm-4">
+            <panel id="panel1">
+                <i class="glyphicon glyphicon-th-list" id="DomainIcon"></i>
+                @Html.Label("Department", "Department", new { @class = "control-label" })
+                @Html.DisplayFor(m => m.AdminDepartment.Name, new { @class = "form-control" })
+                <br /><br />
+            </panel>
+        </div>
+    </div>
+</div>
+<style>
+    .col-sm-4 {
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+
+</style>

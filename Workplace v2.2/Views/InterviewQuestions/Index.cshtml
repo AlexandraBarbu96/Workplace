@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Workplace_v2._2.Models.InterviewQuestion>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Interview.InterviewId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Question.QuestionText)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Interview.InterviewId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Question.QuestionText)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.InterviewQuestionId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.InterviewQuestionId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.InterviewQuestionId })
+        </td>
+    </tr>
+}
+
+</table>

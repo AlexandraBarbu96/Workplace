@@ -1,0 +1,27 @@
+﻿@model Workplace_v2._2.Models.Question
+@using (Html.BeginForm("Edit", "Questions", FormMethod.Post))
+{
+    @Html.HiddenFor(m => m.QuestionId)
+    @Html.HiddenFor(m => m.Job)
+    @Html.HiddenFor(m => m.JobId)
+    @Html.HiddenFor(m => m.Creator)
+    @Html.HiddenFor(m => m.CreatorId)
+    @Html.HiddenFor(m => m.Approved)
+    @Html.AntiForgeryToken()
+    @Html.HttpMethodOverride(HttpVerbs.Put)
+<div class="form-horizontal">
+    <div class="form-group">
+        <div class="row col-md-12">
+            <div>
+                @Html.TextAreaFor(model => model.Text, new { @class = "form-control", @rows = "6", @cols = "80" })
+                @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row col-md-12">
+            <div class="col-md-offset-6 col-md-12">
+                <input type="submit" value="Save" class="site-button" id="save-button" />
+            </div>
+        </div>
+    </div>
+</div>
+}

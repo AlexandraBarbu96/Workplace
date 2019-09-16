@@ -1,0 +1,200 @@
+﻿@model IEnumerable<Workplace_v2._2.Models.ApplicationUser>
+@using Workplace_v2._2.Models;
+@{
+    ViewBag.Title = "Users";
+    RegisterViewModel userModel = (RegisterViewModel)HttpContext.Current.Session["userModel" + Session.SessionID];
+    if(Session["oldUserModel" + Session.SessionID] != null)
+    {
+        var newPassword = userModel.Password;
+        userModel = (RegisterViewModel)HttpContext.Current.Session["oldUserModel" + Session.SessionID];
+        Session.Remove("oldUserModel" + Session.SessionID);
+        userModel.Password = newPassword;
+        userModel.ConfirmPassword = newPassword;
+        userModel.AllDepartments = userModel.GetAllDepartments();
+    }
+    var candidates = Model.Where(c => c.IsInRole("Candidate")).ToList();
+    var employees = Model.Where(c => c.IsInRole("Employee")).ToList();
+    var supervisors = Model.Where(c => c.IsInRole("Supervisor")).ToList();
+}
+    <article id="tabs-min" class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
+        <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+            <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active" onclick="editTabHide()">
+                <a href="#candidates">
+                    Candidates
+                </a>
+            </li>
+            <li class="ui-state-default ui-corner-top" onclick="editTabHide()">
+                <a href="#employees">
+                    Employees
+                </a>
+            </li>
+            <li class="ui-state-default ui-corner-top" onclick="editTabHide()">
+                <a href="#add-employee" title="Add New Employee">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </a>
+            </li>
+            <li class="ui-state-default ui-corner-top" onclick="editTabHide()">
+                  <a href="#supervisors">
+                      Supervisors
+                  </a>
+            </li>
+            @foreach (var user in Model)
+            {
+                if (user.IsInRole("Employee") || user.IsInRole("Supervisor"))
+                {
+                    <li class="ui-state-default ui-corner-top" style="display:none" id="editTab@(user.Id)">
+                        <a href="#tabs-min-@(user.Id)" id="editTabLink@(user.Id)" title="Edit @(user.Id)">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                    </li>
+                }
+            }
+
+            @using (Html.BeginForm("Create", "Account", FormMethod.Get, new { @id = "filterForm" }))
+            {
+                @Html.Label("Departments: ", new { @id = "departmentsLabel" })
+                @Html.DropDownList("departmentsFilter", new SelectList(ViewBag.Departments, "Value", "Text", ViewBag.departmentFilter))
+                <input class="site-button" type="submit" value="Filter" />
+            }
+        </ul>
+
+        <div id="candidates" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide">
+            @if (candidates.Any())
+            {
+                <div class="grid" id="user-grid">
+                    @foreach (var user in candidates)
+                    {
+                        if (user.IsInRole("Candidate"))
+                        {
+                            @Html.Partial("~/Views/Users/UserPartial.cshtml", user)
+                        }
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="grid" id="content-grid">
+                    <dl>
+                        <dd style="text-align:center">
+                            @("No candidates.")
+                        </dd>
+                    </dl>
+                </div>
+            }
+        </div>
+        <div id="employees" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide">
+            @if (employees.Any())
+            {
+                <div class="grid" id="user-grid">
+                    @foreach (var user in employees)
+                    {
+                        if (user.IsInRole("Employee"))
+                        {
+                            @Html.Partial("~/Views/Users/UserPartial.cshtml", user)
+                        }
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="grid" id="content-grid">
+                    <dl>
+                        <dd style="text-align:center">
+                            @("No employees.")
+                        </dd>
+                    </dl>
+                </div>
+            }
+        </div>
+        <div id="add-employee" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide">
+            @Html.Partial("~/Views/Users/AddEmployeePartial.cshtml", userModel)
+        </div>
+        <div id="supervisors" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide">
+            @if (supervisors.Any())
+            {
+                <div class="grid" id="user-grid">
+                    @foreach (var user in Model)
+                    {
+                        if (user.IsInRole("Supervisor"))
+                        {
+                            @Html.Partial("~/Views/Users/UserPartial.cshtml", user)
+                        }
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="grid" id="content-grid">
+                    <dl>
+                        <dd style="text-align:center">
+                            @("No supervisors.")
+                        </dd>
+                    </dl>
+                </div>
+            }
+        </div>
+        @foreach (var user in Model)
+        {
+            if (user.IsInRole("Employee") || user.IsInRole("Supervisor"))
+            {
+                <div id="tabs-min-@(user.Id)" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide">
+                    @Html.Partial("~/Views/Users/EditEmployeeOrSupervisorPartial.cshtml", user)
+                </div>
+            }
+        }
+    </article>
+
+@section Style{
+    <style>
+        #content-grid{
+            grid-template-columns:1fr;
+            margin:2vw;
+        }
+        #filterForm{
+            float:right;
+        }
+
+            #filterForm > #departmentsLabel {
+                color: #c0c0c0;
+                font-weight: normal;
+                margin-right: 5px;
+            }
+        select {
+            font-family: 'Nunito',sans-serif !important;
+            font-weight: normal;
+        }
+        .dot {
+            height: 5px;
+            width: 5px;
+        }
+
+        .blockquote {
+            font-size: small;
+            margin-top: 0.4vw;
+        }
+            
+    </style>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+}
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#tabs-min").tabs();
+        });
+
+        function editTabShow(id) {
+            document.getElementById("editTab" + id).style.display = "block";
+        }
+
+        function editTabHide() {
+            var classesNodeList = document.querySelectorAll("article > ul > li:nth-child(n+5)");
+            classesNodeList.forEach(function (li) {
+                li.style.display = "none";
+            });
+        }
+    </script>
+}

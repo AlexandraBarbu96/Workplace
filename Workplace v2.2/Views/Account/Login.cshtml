@@ -1,0 +1,67 @@
+﻿@using Workplace_v2._2.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Log in";
+}
+
+<div class="container-fluid d-flex h-100" style="display:block;
+    margin:0 auto;
+    text-align:center;background-size: cover; background-repeat: no-repeat; background-position: center center">
+    <div class="ml-auto mr-auto h-50">
+        <h2 class="display-3 text-center">@ViewBag.Title</h2>
+        <section id="loginForm">
+            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true,"",new { @class = "text-danger" })
+                <hr />
+                <div class="form-group">
+                    <div class="col-md-offset-3">
+                        @Html.LabelFor(m => m.UserName, new { @class = "col-md-3 control-label" })
+                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3">
+                        @Html.LabelFor(m => m.Password, new { @class = "col-md-3 control-label" })
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-0 col-md-10">
+                        <div class="checkbox">
+                            @Html.CheckBoxFor(m => m.RememberMe)
+                            @Html.LabelFor(m => m.RememberMe)
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-0">
+                        <input type="submit" class="site-button" value="Login" />
+                    </div>
+                </div>
+                @* Enable this once you have account confirmation enabled for password reset functionality
+                    <p>
+                        @Html.ActionLink("Forgot your password?", "ForgotPassword")
+                    </p>*@
+            }
+        </section>
+    </div>
+</div>
+@section Style{
+<style>
+    .validation-summary-errors ul {
+        list-style: none;
+    }
+    @@media (max-width: 1020px){
+        .form-group input {
+            display:inline-block;
+        }
+    }
+</style>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

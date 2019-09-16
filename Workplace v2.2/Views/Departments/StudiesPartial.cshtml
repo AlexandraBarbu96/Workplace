@@ -1,0 +1,122 @@
+﻿@model Workplace_v2._2.Models.Study
+@using Workplace_v2._2.Models;
+@using Microsoft.AspNet.Identity;
+@{
+    ApplicationDbContext db = new ApplicationDbContext();
+    var Studies = db.Studies.ToList();
+}
+<div class="grid" id="content-grid">
+    <dl>
+        <dd>
+            All Studies
+        </dd>
+        <dd>
+            @if (Studies.Any())
+            {
+                <ul>
+                    @foreach (var study in Studies)
+                    {
+                        <li class="ability">
+                            @Html.DisplayName(study.Degree + ": " + study.Specialty)
+                            @using (Html.BeginForm("RemoveStudy", "Departments", new { id = study.StudyId }, FormMethod.Post, new { id = "removeStudyForm" + study.StudyId, @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+                            {
+                                @Html.HttpMethodOverride(HttpVerbs.Delete)
+                                @Html.AntiForgeryToken()
+                                <a href="javascript:document.getElementById('removeStudyForm@(study.StudyId)').submit()" class="glyphicon glyphicon-remove-circle" onclick="return confirm('Are you sure you want to delete this study?');" data_toggle="tooltip" data_placement="bottom" title="Remove Study"></a>
+                            }
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                @("No studies have been added.")
+            }
+        </dd>
+    </dl>
+</div>
+<div class="grid" id="content-grid">
+    <dl>
+        <dd>
+            Add Study:
+        </dd>
+        <dd class="form-group">
+            @using (Html.BeginForm("AddStudy", "Departments", FormMethod.Post, new { @class = "form-horizontal", @id = "addStudyForm", role = "form", enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="row col-sm-10">
+                    <div class="col-sm-3">
+                        @Html.Label("Degree", new { @class = "control-label" })
+                        @Html.DropDownListFor(m => m.Degree, new SelectList(new EducationViewModel().GetAllDegrees(), "Text"), "---Select---", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Degree, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.Label("Specialty", new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.Specialty, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Specialty, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-sm-1">
+                        @Html.Label("space", new { @class = "control-label", @style = "visibility:hidden" })
+                        <a href="javascript:document.getElementById('addStudyForm').submit()" title="Add new study" id="add-button-study" class="site-button"><span class="glyphicon glyphicon-plus"></span></a>
+                    </div>
+                </div>
+            }
+        </dd>
+    </dl>
+</div>
+
+<style>
+
+    #content-grid {
+        margin: 2vw;
+        grid-gap: 2rem;
+    }
+
+    #add-button-study {
+        background-color: #ffffff;
+    }
+
+        #add-button-study span {
+            color: #838383;
+        }
+
+    .site-button:hover,
+    .site-button span:hover {
+        background-color: #f5f5f5;
+        color: #0b91d4;
+    }
+
+    #content-grid {
+        width: 100%;
+        grid-template-columns: 1fr;
+    }
+
+
+        #content-grid > dl > dd:first-child > a:nth-child(2) {
+            float: right;
+        }
+
+        #content-grid > dl > dd > ul > li > form {
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+            #content-grid > dl > dd > ul > li > form > a {
+                color: #ffffff;
+            }
+
+                #content-grid > dl > dd > ul > li > form > a:hover {
+                    text-decoration: none;
+                }
+
+    .ability, .matching-ability, .personal-ability {
+        padding: 3px;
+        display: inline-block;
+        font-size: medium;
+        margin: 5px;
+        margin-right: 0;
+        border-radius: 5px;
+        border: 1px;
+        color: #ffffff;
+    }
+</style>

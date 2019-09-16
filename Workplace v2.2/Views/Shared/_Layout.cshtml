@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="icon" type="image/gif/png" href="~/img/title-logo.png">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200&display=swap" rel="stylesheet">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @using Microsoft.AspNet.Identity;
+    @using Workplace_v2._2.Models;
+    @{
+        ApplicationDbContext db = new ApplicationDbContext();
+        var user = db.Users.Find(HttpContext.Current.User.Identity.GetUserId());
+
+        var countNews = 0;
+        if (Request.IsAuthenticated)
+        {
+            if (user.IsInRole("Administrator") || user.IsInRole("Supervisor"))
+            {
+                var countRequests = db.Questions.Where(q => q.Approved == false).Count();
+                var countInterviews = db.Interviews.Where(i => i.Candidate.IsActive && i.IsDone && !i.IsGraded).Count();
+                var countCandidates = db.Users.Where(c => c.IsActive == false && c.CandidateInterview.IsGraded == false).Count();
+
+                if (user.IsInRole("Supervisor"))
+                {
+                    countRequests -= db.Questions.Where(q => q.Job.DepartmentId != user.AdminDepartmentId && q.Approved == false).Count();
+                    countInterviews -= db.Interviews.Where(i => i.Job.DepartmentId != user.AdminDepartmentId && i.Candidate.IsActive && i.IsDone && !i.IsGraded).Count();
+                    countCandidates -= db.Users.Where(c => c.CandidateInterview.Job.DepartmentId != user.AdminDepartmentId && c.IsActive == false && c.CandidateInterview.IsGraded == false).Count();
+                }
+
+                countNews = countRequests + countInterviews + countCandidates;
+            }
+        }
+    }
+    <style>
+    </style>
+</head>
+<body>
+    <!--Inverted Navbar Start Here-->
+    <!--<nav> tag  start with classes .navbar and .navbar-inverse -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="text-center">
+                        <a href="@Url.Action("Index", "Home")">
+                            <span class="glyphicon glyphicon-home"></span>
+                            Home
+                        </a>
+                    </li>
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <li class="text-center">
+                            <a href="@Url.Action("Index", "News")">
+                                <span class="glyphicon glyphicon-asterisk"></span>
+                                News
+                                @if (countNews != 0)
+                                {
+                                    <span class="badge" id="from-layout">@countNews</span>
+                                }
+                            </a>
+                        </li>
+                        <li class="text-center">
+                            <a href="@Url.Action("Create", "Account")">
+                                <span class="glyphicon glyphicon-user"></span>
+                                Users
+                            </a>
+                        </li>
+                        <li class="text-center">
+                            <a href="@Url.Action("Create", "Departments")">
+                                <span class="glyphicon glyphicon-th"></span>
+                                Departments
+                            </a>
+                        </li>
+                    }
+                    else if (User.IsInRole("Supervisor"))
+                    {
+                        <li class="text-center">
+                            <a href="@Url.Action("Index", "News")">
+                                <span class="glyphicon glyphicon-asterisk"></span>
+                                News
+                                @if (countNews != 0)
+                                {
+                                    <span class="badge" id="from-layout">@countNews</span>
+                                }
+                            </a>
+                        </li>
+                        <li class="text-center">
+                            <a href="@Url.Action("Details", "Departments", new { id = user.AdminDepartmentId })">
+                                <span class="glyphicon glyphicon-th"></span>
+                                Department
+                            </a>
+                        </li>
+                    }
+                    else if (User.IsInRole("Candidate"))
+                    {
+                        var test = new ApplicationDbContext().Interviews.Where(i => i.CandidateId == user.Id).First();
+
+                        if (test.IsDone)
+                        {
+                            <li class="text-center">
+                                <a href="@Url.Action("Index", "Answers")">
+                                    <span class="glyphicon glyphicon-list-alt"></span>
+                                    See Answers
+                                </a>
+                            </li>
+                        }
+                    }
+                    else if (User.IsInRole("Employee"))
+                    {
+                        <li class="text-center">
+                            <a href="@Url.Action("Details", "Departments", new { id = user.EmployeeDepartmentId})">
+                                <span class="glyphicon glyphicon-th"></span>
+                                Department
+                            </a>
+                        </li>
+                    }
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    @*corpul din _Layout.cshtml*@
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+    <footer class="grid" id="footer-grid">
+        <dl>
+            <dd>
+                <h4>Contact</h4>
+            </dd>
+            <dd>
+                <p> +(401) 070 000 00 00</p>
+            </dd>
+            <dd>
+                1 Flowers Street Bucharest, 00000
+            </dd>
+        </dl>
+        <dl>
+            <dd>
+                <h4>Map</h4>
+            </dd>
+            <dd>
+                <div class="mapouter">
+                    <div class="gmap_canvas"><iframe width="300" height="150" id="gmap_canvas" src="https://maps.google.com/maps?q=university%20of%20bucharest&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe><a href="https://www.embedgooglemap.org">embedgooglemap.org</a></div>
+                    <style>
+                        .mapouter {
+                            position: relative;
+                            text-align: right;
+                            height: 150px;
+                            width: 300px;
+                        }
+
+                        .gmap_canvas {
+                            overflow: hidden;
+                            background: none !important;
+                            height: 150px;
+                            width: 300px;
+                        }
+                    </style>
+                </div>
+            </dd>
+            <dd>
+                <p>&copy; @DateTime.Now.Year - Workplace</p>
+            </dd>
+        </dl>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var message = '@ViewBag.message';
+            if (message) {
+                alert(message);
+            }
+        });
+    </script>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    @RenderSection("style", required: false)
+</body>
+</html> 

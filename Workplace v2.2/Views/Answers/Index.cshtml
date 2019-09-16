@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Workplace_v2._2.Models.Answer>
+
+@{
+    ViewBag.Title = "Index";
+}
+<div class="grid" id="content-grid">
+        @{ 
+            var i = 1;
+        }
+        @foreach (var item in Model)
+        {
+            <dl>
+                <dd>
+                    <div>
+                        @(i + ". ")
+                        @Html.DisplayFor(model => item.Question.Text, new { @class = "form-control" })
+                    </div>
+                </dd>
+                <dd>
+                    <div>
+                        @Html.Raw(HttpUtility.HtmlDecode(item.Text))
+                    </div>
+                </dd>
+            </dl>
+            ++i;
+        }
+        </div>
+<style>
+    #content-grid {
+        margin: 2vw;
+        grid-template-columns: 1fr;
+    }
+
+        #content-grid > dl form > dd:first-child,
+        #content-grid > dl form > dd:nth-child(2),
+        #content-grid > dl form > dd:nth-child(3) {
+            margin-left: 10%;
+        }
+</style>

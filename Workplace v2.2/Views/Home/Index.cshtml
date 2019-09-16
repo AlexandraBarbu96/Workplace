@@ -1,0 +1,285 @@
+﻿@model IEnumerable<Workplace_v2._2.Models.Job>
+@using Workplace_v2._2.Models;
+@using Microsoft.AspNet.Identity
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    ApplicationDbContext db = new ApplicationDbContext();
+    //ApplicationUser user = db.Users.Find(User.Identity.GetUserId());
+    ViewBag.Title = "Available Jobs";
+    var sessionId = HttpContext.Current.Session.SessionID;
+    var educationCount = 0;
+}
+    <ol class="breadcrumb">
+    <li>
+        @ViewBag.Title
+    </li>
+    <li>
+        @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { action = "#jobs" }))
+        {
+            @("Experience: " )
+            @Html.DropDownList("experienceFilter", new SelectList(ViewBag.YearsOfExperience, ViewBag.experienceFilter))
+            @("Departments: " )
+            @Html.DropDownList("departmentsFilter", new SelectList(ViewBag.Departments, "Value", "Text", ViewBag.departmentFilter))
+            <input class="site-button" type="submit" value="Filter" />
+        }
+    </li>
+    </ol>
+    <script>
+        function changeurl(url) {
+            location.href = url;
+        }
+    </script>
+    <div class="grid" id="content-grid">
+        @if (Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <dl>
+                    <dd>
+                        @Html.DisplayFor(model => item.Title)
+                        @if (item.YearsOfExperience == "none")
+                        {
+                            <div class="label label-success">@item.YearsOfExperience</div>
+                        }
+                        else if (item.YearsOfExperience == "1-2 year(s) (Junior)")
+                        {
+                            <div class="label label-info">@item.YearsOfExperience</div>
+                        }
+                        else if (item.YearsOfExperience == "3-5 years")
+                        {
+                            <div class="label label-warning">@item.YearsOfExperience</div>
+                        }
+                        else
+                        {
+                            <div class="label label-danger">@item.YearsOfExperience</div>
+                        }
+                        <div class="label label-default" style="color:white;background-color:#838383">@item.Department.Name</div>
+                    </dd>
+                    <dd>
+                        <b>@("Job Description:")</b>
+                        @Html.Raw(HttpUtility.HtmlDecode(item.Description))
+                    </dd>
+                    @if (item.JobSkills.Any())
+                    {
+                        <dd>
+                            <b>@("Required Skills:")</b>
+                            @foreach (var skill in item.JobSkills)
+                            {
+                                <div class="label label-default">
+                                    @Html.DisplayFor(modelItem => skill.Skill.Name)
+                                </div>
+                            }
+                        </dd>
+                    }
+                    else
+                    {
+                        <dd style="overflow:hidden">
+                            <div>
+                                <b>@("No required skills.")</b>
+                            </div>
+                        </dd>
+                    }
+
+                    @if (item.JobStudies.Any())
+                    {
+                        <dd>
+                            <b>@("Recommended Education:")</b>
+                            @for (var i = 0; i < item.JobStudies.Count(); ++i)
+                            {
+                                <div class="label label-default" id="short-education-button@(i + educationCount)" onclick="changeEducationButton(@(i + educationCount))">
+                                    @Html.DisplayName(item.JobStudies.ElementAt(i).Study.Degree)
+                                </div>
+                                <div class="label label-default" id="education-button@(i + educationCount)" onclick="changeEducationButton(@(i + educationCount))" style="display:none">
+                                    @Html.DisplayName(item.JobStudies.ElementAt(i).Study.Specialty)
+                                </div>
+                            }
+                        </dd>
+                        educationCount += item.JobStudies.Count();
+                    }
+                    else
+                    {
+                        <dd style="overflow:hidden">
+                            <div>
+                                <b>@("No required studies.")</b>
+                            </div>
+                        </dd>
+                    }
+                    <dd>
+                        @if (!Request.IsAuthenticated)
+                        {
+                            <a class="site-button" href="~/Home/Register/@item.JobId" onclick="setJobId(@item.JobId)">Apply for job</a>
+                        }
+                    </dd>
+                </dl>
+
+            }
+        }
+        else
+        {
+            <dl id="no-jobs">
+                <dd>
+                    @("No available jobs in this category.")
+                </dd>
+            </dl>
+        }
+    </div>
+
+@section Style{
+    <style>
+        #content-grid > dl{
+            width:95%;
+        }
+       #content-grid > dl > dd:first-child{
+           font-size:300%;
+       }
+        #content-grid > dl > dd:nth-child(n+2) {
+            
+            margin: 2vw;
+            padding: 1vw;
+            text-align: justify;
+            font-size: 120%;
+            
+        }
+            #content-grid > dl > dd:nth-child(2) {
+                max-height: 300px;
+                overflow: auto;
+                overflow-x: hidden;
+            }
+                #content-grid > dl > dd:nth-child(n+3){
+                    height:100px;
+                    overflow:auto;
+                }
+
+                    #content-grid > dl > dd:nth-child(n+3) > b,
+                    #content-grid > dl > dd:nth-child(n+3) > div {
+                        float: left;
+                    }
+                    #content-grid > dl > dd > a {
+                        font-size: 120%;
+                        display: flex;
+                        margin: auto;
+                        width: 140px;
+                        margin-top: 15px;
+                        padding: 5px;
+                    }
+
+                        #content-grid > dl > dd > a:hover {
+                            text-decoration: none;
+                        }
+        @@media(max-width: 1020px) {
+            #content-grid {
+                grid-template-columns: repeat(2, minmax(40%, 1fr));
+                grid-gap: 4rem;
+            }
+
+                #content-grid > dl > dd:first-child {
+                    font-size: 250%;
+                }
+        }
+
+        @@media(max-width: 992px) {
+            #content-grid {
+                grid-template-columns: repeat(2, minmax(35%, 1fr));
+            }
+
+                #content-grid > dl > dd:first-child {
+                    font-size: 230%;
+                }
+        }
+
+        @@media(max-width: 800px) {
+            #content-grid {
+                grid-template-columns: repeat(2, minmax(30%, 1fr));
+                grid-gap: 2rem;
+            }
+
+                #content-grid > dl > dd:first-child {
+                    font-size: 200%;
+                }
+        }
+
+        @@media(max-width: 770px) {
+            #content-grid {
+                grid-template-columns: repeat(1, minmax(20%, 1fr));
+                height: 450px;
+            }
+
+                #content-grid > dl > dd:first-child {
+                    font-size: 190%;
+                }
+            
+            .breadcrumb {
+                width:100%;
+                display: inline-block;
+            }
+
+                .breadcrumb > li:first-child {
+                    display: none;
+                }
+
+            #no-jobs {
+                margin-left: auto !important;
+            }
+
+            .body-content{
+                height:600px;
+            }
+                
+        }
+        .breadcrumb > li:first-child {
+            font-size: 24px;
+            font-family: inherit;
+            font-weight: 500;
+            line-height: 1.1;
+            color: inherit;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .breadcrumb > li:nth-child(2) {
+            float:right;
+            clear:right;
+            align-self:center;
+        }
+        .breadcrumb > li:nth-child(2):before{
+            content:"";
+        }
+        .label {
+            margin: 3px;
+            float: right;
+            font-size: medium;
+            font-weight: normal;
+        }
+
+        .label-default{
+            background-color:#f5f5f5;
+            color:#838383;
+        }
+
+        #no-jobs {
+            margin-left: 50%
+        }
+
+        #no-jobs > dd{
+            text-align:center;
+        }
+
+    </style>
+}
+@section Scripts{
+    <script type="text/javascript">
+    function setJobId(x) {
+        sessionStorage.setItem("jobId" + @sessionId, x);
+        //var value = sessionStorage.getItem("MyId");
+        }
+        function changeEducationButton(i) {
+            if (document.getElementById("short-education-button" + i).style.display == "inline-block") {
+                document.getElementById("short-education-button" + i).style.display = "none";
+                document.getElementById("education-button" + i).style.display = "inline-block";
+            }
+            else {
+                document.getElementById("short-education-button" + i).style.display = "inline-block";
+                document.getElementById("education-button" + i).style.display = "none";
+            }
+        }
+    </script>
+}

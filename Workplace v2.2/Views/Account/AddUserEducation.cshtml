@@ -1,0 +1,200 @@
+﻿@model Workplace_v2._2.Models.EducationViewModel
+@using Workplace_v2._2.Models;
+@using Microsoft.AspNet.Identity;
+@{
+    ViewBag.Title = "Education";
+    ApplicationDbContext db = new ApplicationDbContext();
+    var Model = (ExperienceViewModel)HttpContext.Current.Session["experienceModel" + Session.SessionID];
+    List<Study> jobStudies = db.Jobs.Find(Model.JobId).JobStudies.Select(js => js.Study).ToList();
+    var countUserEducation = new int[Model.userEducation.Count()];
+}
+<div class="grid" id="content-grid">
+    <dl>
+        <dd>
+            @Html.ActionLink("❮ Edit Skills", "AddUserSkills", "Account", new { }, new { id = "first-dd-button", @class = "site-button" })
+            @Html.ActionLink("Your Job Experience ❯", "AddUserJobs", "Account", new { }, new { id = "first-dd-button", @class = "site-button" })
+        </dd>
+        <dd class="form-group">
+            @using (Html.BeginForm("AddUserEducation", "Account", FormMethod.Post, new { @class = "form-horizontal", @id = "formId", role = "form", enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="row col-sm-10">
+                    <div class="col-sm-3">
+                        <i class="glyphicon glyphicon-education"></i>
+                        @Html.LabelFor(model => model.InstitutionName, "Institution", htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.InstitutionName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.InstitutionName, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.LabelFor(model => model.Study, "Degree/Specialty", htmlAttributes: new { @class = "control-label" })
+                        @Html.DropDownList("selectedStudy", new SelectList(ViewBag.Studies, "Value", "Text", ViewBag.selectedStudy), "---Select---", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Study, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-sm-1">
+                        @Html.Label("space", new { @class = "control-label", @style = "visibility:hidden" })
+                        <input type="submit" value="Add" name="action:Add Study" class="site-button" />
+                    </div>
+                </div>
+                <div class="row col-sm-10">
+                    <div class="col-sm-3">
+
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.Label("Degree", new { @class = "control-label" })
+                        @Html.DropDownList("newDegree", new SelectList(ViewBag.Degrees, "Value", "Text", ViewBag.selectedDegree), "---Select---", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.newDegree, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.Label("Specialty", new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.newSpecialty, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.newSpecialty, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-sm-1">
+                        @Html.Label("space", new { @class = "control-label", @style = "visibility:hidden" })
+                        <input type="submit" value="Add" name="action:Add New Study" class="site-button" />
+                    </div>
+                </div>
+            }
+        </dd>
+    </dl>
+    <dl>
+        <dd>
+            @("Added Studies")
+        </dd>
+        <dd>
+            <ul>
+                @{
+                    var count = 0;
+                }
+                @for (int i = 0; i < Model.userEducation.Count(); ++i)
+                {
+                    var found = false;
+                    foreach (var jobStudy in jobStudies)
+                    {
+                        if (jobStudy.StudyId == Model.userEducation[i].StudyId)
+                        {
+                            found = true;
+                            <li class="matching-ability" id="short-education-button@(i)" onclick="changeEducationButton(@(i))">
+                                @(Model.userEducation[i].Study.Degree)
+                                <a href="~/Account/RemoveEducation/?ns=@i" class="glyphicon glyphicon-remove-circle" data_toggle="tooltip" data_placement="bottom" title="Remove Study"></a>
+                            </li>
+                            <li class="matching-ability" id="education-button@(i)" onclick="changeEducationButton(@(i))" style="display:none">
+                                @(Model.userEducation[i].Study.Specialty + " @ " + Model.userEducation[i].Institution)
+                                <a href="~/Account/RemoveEducation/?ns=@i" class="glyphicon glyphicon-remove-circle" data_toggle="tooltip" data_placement="bottom" title="Remove Study"></a>
+                            </li>
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                            <li class="ability" id="short-education-button@(i)" onclick="changeEducationButton(@(i))">
+                                @(Model.userEducation[i].Study.Degree)
+                                <a href="~/Account/RemoveEducation/?ns=@i" class="glyphicon glyphicon-remove-circle" data_toggle="tooltip" data_placement="bottom" title="Remove Study"></a>
+                            </li>
+                        <li class="ability" id="education-button@(i)" onclick="changeEducationButton(@(i))" style="display:none">
+                            @(Model.userEducation[i].Study.Specialty + " @ " + Model.userEducation[i].Institution)
+                            <a href="~/Account/RemoveEducation/?ns=@i" class="glyphicon glyphicon-remove-circle" data_toggle="tooltip" data_placement="bottom" title="Remove Study"></a>
+                        </li>
+                    }
+                    count++;
+                }
+                @for (int i = 0; i < Model.newEducationStudies.Count(); ++i)
+                {
+                        <li class="personal-ability" id="short-education-button@(i + count)" onclick="changeEducationButton(@(i + count))">
+                            @(Model.newEducationStudies[i].Study.Degree)
+                            <a href="~/Account/RemoveNewEducation/?ns=@i" class="glyphicon glyphicon-remove-circle" data_toggle="tooltip" data_placement="bottom" title="Remove Study"></a>
+                        </li>
+                    <li class="personal-ability" id="education-button@(i + count)" onclick="changeEducationButton(@(i + count))" style="display:none">
+                        @(Model.newEducationStudies[i].Study.Specialty + " @ " + Model.newEducationStudies[i].Institution)
+                        <a href="~/Account/RemoveNewEducation/?ns=@i" class="glyphicon glyphicon-remove-circle" data_toggle="tooltip" data_placement="bottom" title="Remove Study"></a>
+                    </li>
+                }
+            </ul>
+        </dd>
+    </dl>
+</div>
+<div id="legend-div">
+    <dl>
+        <dd>
+            <h4>Legend</h4>
+            <ul>
+                <li class="dot" id="matching-dot"></li>
+                <li>required/preferred education</li>
+                <li class="dot"></li>
+                <li>unrequired education</li>
+            </ul>
+        </dd>
+    </dl>
+</div>
+@section Style{
+    <style>
+        #content-grid {
+            margin: 2vw;
+            grid-gap: 2rem;
+            width: 100%;
+            grid-template-columns: 1fr;
+        }
+
+        #first-dd-button {
+            background-color: #f5f5f5;
+            color: #838383;
+        }
+
+            #first-dd-button:hover {
+                background-color: #f5f5f5;
+                color: #0b91d4;
+            }
+            div .row:last-child{
+                margin-bottom:3%;
+            }
+        #content-grid > dl > dd:first-child > a:nth-child(2) {
+            float: right;
+        }
+
+        #content-grid > dl > dd > ul > li > a {
+            margin-left: 5px;
+            color: #ffffff;
+        }
+
+            #content-grid > dl > dd > ul > li > a:hover {
+                text-decoration: none;
+            }
+
+        .ability, .matching-ability, .personal-ability {
+            padding: 3px;
+            display: inline-block;
+            font-size: medium;
+            margin: 5px;
+            margin-right: 0;
+            border-radius: 5px;
+            border: 1px;
+            color: #ffffff;
+        }
+
+        #legend-div {
+            margin: 4vw;
+        }
+
+            #legend-div > dl > dd > ul > li:nth-child(2n) {
+                margin-right: 10%;
+            }
+
+            #legend-div > dl > dd > ul > li {
+                display: inline-block;
+            }
+    </style>
+}
+@section Scripts{
+    <script>
+        function changeEducationButton(i) {
+            if (document.getElementById("short-education-button" + i).style.display == "inline-block") {
+                document.getElementById("short-education-button" + i).style.display = "none";
+                document.getElementById("education-button" + i).style.display = "inline-block";
+            }
+            else {
+                document.getElementById("short-education-button" + i).style.display = "inline-block";
+                document.getElementById("education-button" + i).style.display = "none";
+            }
+        }
+    </script>
+}

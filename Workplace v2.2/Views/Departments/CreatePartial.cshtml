@@ -1,0 +1,141 @@
+﻿@model Workplace_v2._2.Models.DepartmentViewModel
+@using Microsoft.AspNet.Identity
+@{
+    var userId = User.Identity.GetUserId();
+    if (Model.AdminId != null)
+    {
+        userId = Model.AdminId;
+    }
+}
+<div class="form-horizontal">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <panel id="panel1">
+        @using (Html.BeginForm("Create", "Departments", new { url = "#departments" }, FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+        <div class="form-group">
+            <div class="row col-sm-12">
+                <div class="col-sm-3">
+                    @Html.LabelFor(model => model.Name, "Department Name", htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @id = "firstName" } })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-sm-3">
+                    @Html.Label("Choose a supervisor from employees", htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownList("AdminId", new SelectList(Model.Employees, "Value", "Text", userId), new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.AdminId, "", new { @class = "text-danger" })
+                </div>
+                @Html.HiddenFor(m => m.Employees)
+                @Html.HiddenFor(m => m.NewSupervisor)
+                @Html.HiddenFor(m => m.NewSupervisor.Email)
+                @Html.HiddenFor(m => m.NewSupervisor.FirstName)
+                @Html.HiddenFor(m => m.NewSupervisor.LastName)
+                @Html.HiddenFor(m => m.NewSupervisor.Password)
+                @Html.HiddenFor(m => m.NewSupervisor.PhoneNumber)
+                @Html.HiddenFor(m => m.NewSupervisor.UserName)
+                <div class="col-sm-6">
+                    @Html.Label("Add With existing supervisor", htmlAttributes: new { @class = "control-label", @style = "visibility:hidden" })
+                    <input type="submit" value="Add" class="form-control site-button" style="width:15% !important;" />
+                </div>
+            </div>
+            <div class="row col-sm-10">
+                <div class="col-sm-6" style="margin-top:2.5rem">
+                    <i class="glyphicon glyphicon-chevron-down" id="down"></i>
+                    <a onclick="showForm()">Or create a new account for the supervisor</a>
+                </div>
+            </div>
+        </div>
+        }
+    </panel>
+    <panel id="panel2" style="display:none">
+        @using (Html.BeginForm("CreateSupervisor", "Account", new { url = "#departments" }, FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+        <div class="form-group">
+            <div class="row col-sm-10">
+                <div class="col-sm-6" style="margin-top:2.5rem">
+                    <i class="glyphicon glyphicon-chevron-up" id="up"></i>
+                    <a onclick="showForm()">Create department</a>
+                </div>
+            </div>
+            <div class="row col-sm-12" style="margin-top:2.5rem">
+                <div class="col-sm-4">
+                    <i class="glyphicon glyphicon-th"></i>
+                    @Html.LabelFor(model => model.Name, "Department Name", htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @id = "secondName" } })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row col-sm-12">
+                <div class="col-sm-4">
+                    <i class="glyphicon glyphicon-user"></i>
+                    @Html.Label("FirstName", "First Name", new { @class = "control-label" })
+                    @Html.TextBoxFor(m => m.NewSupervisor.FirstName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.NewSupervisor.FirstName, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-sm-4">
+                    @Html.Label("LastName", "Last Name", new { @class = "control-label" })
+                    @Html.TextBoxFor(m => m.NewSupervisor.LastName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.NewSupervisor.LastName, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-sm-4">
+                    @Html.Label("UserName", "Username", new { @class = "control-label" })
+                    @Html.TextBoxFor(m => m.NewSupervisor.UserName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.NewSupervisor.UserName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row col-sm-12">
+                <div class="col-sm-4">
+                    <i class="glyphicon glyphicon-envelope"></i>
+                    @Html.Label("Email", "Email", new { @class = "control-label" })
+                    @Html.TextBoxFor(m => m.NewSupervisor.Email, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.NewSupervisor.Email, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-sm-4">
+                    <i class="glyphicon glyphicon-phone"></i>
+                    @Html.Label("PhoneNumber", "Phone Number", new { @class = "control-label" })
+                    @Html.TextBoxFor(m => m.NewSupervisor.PhoneNumber, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.NewSupervisor.PhoneNumber, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-offset-4 col-md-10">
+                @Html.HiddenFor(m => m.NewSupervisor.Password)
+                @Html.HiddenFor(m => m.AdminId)
+
+                <input type="submit" class="site-button" value="Add with new supervisor" />
+            </div>
+        </div>
+        }
+    </panel>
+</div>
+<style>
+    @@media(min-width:992px){
+        div .col-md-10 {
+            width:auto;
+            margin-right: 0px !important;
+        }
+    }
+    .col-sm-4 {
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+    .site-button{
+        padding:5px !important;
+        border-radius:0px !important;
+    }
+</style>
+<script type="text/javascript">
+    function showForm() {
+        var form = document.getElementById("panel2");
+        if (form.style.display == "none") {
+            document.getElementById("panel1").style.display = "none";
+            document.getElementById("panel2").style.display = "block";
+            document.getElementById("secondName").value = document.getElementById("firstName").value;
+        }
+        else {
+            document.getElementById("panel1").style.display = "block";
+            document.getElementById("panel2").style.display = "none";
+            document.getElementById("firstName").value = document.getElementById("secondName").value;
+        }
+    }
+</script>

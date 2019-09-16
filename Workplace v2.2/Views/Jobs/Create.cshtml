@@ -1,0 +1,106 @@
+﻿@model Workplace_v2._2.Models.JobViewModel
+@using Workplace_v2._2.Models;
+@using Microsoft.AspNet.Identity;
+@{
+    ApplicationDbContext db = new ApplicationDbContext();
+    var user = db.Users.Find(User.Identity.GetUserId());
+}
+@using (Html.BeginForm("CreateStep2", "Jobs", FormMethod.Post, new { id = "jobForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.DepartmentId)
+    <div class="grid" id="content-grid">
+        <dl>
+            <dd>
+                @if (User.IsInRole("Supervisor") && Model.DepartmentId == user.AdminDepartmentId)
+                {
+                    @Html.ActionLink("❮ Back to " + db.Departments.Find(Model.DepartmentId).Name + " department", "Details", "Departments", new { id = Model.DepartmentId }, new { @class = "site-button" })
+                }
+                else
+                {
+                    @Html.ActionLink("❮ Back to departments", "Create", "Departments", new { }, new { @class = "site-button" })
+                }
+                <a href="javascript:document.getElementById('jobForm').submit()" class="site-button">Required Skills ❯</a>
+            </dd>
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <dd class="row-md-10">
+                <div class="col-md-10">
+                    @Html.LabelFor(model => model.Title, "Job Title", htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                </div>
+            </dd>
+            <dd class="row-md-10">
+                <div class="col-md-10">
+                    @Html.LabelFor(model => model.Description, "Description", htmlAttributes: new { @class = "control-label" })
+                    @Html.TextAreaFor(model => model.Description, new { @id = "summernote", @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                </div>
+            </dd>
+            <dd class="row-md-10">
+                <div class="col-sm-5">
+                    @Html.LabelFor(model => model.MinimumScore, "Minimum Score", htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.MinimumScore, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.MinimumScore, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-sm-5">
+                    @Html.LabelFor(model => model.YearsOfExperience, "Years of Experience", htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownListFor(model => model.YearsOfExperience, new SelectList(Model.GetAllYears()), new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.YearsOfExperience, "", new { @class = "text-danger" })
+                </div>
+            </dd>
+        </dl>
+    </div>
+}
+@section Style{
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-lite.css" rel="stylesheet">
+}
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-lite.js"></script>
+    <script>
+        $('#summernote').summernote({
+            height: 300,
+            toolbar: [
+                ['style', ['bold', 'italic', 'underline']],
+                ['font'],
+                ['para', ['ul', 'ol']]
+            ]
+        });
+    </script>
+}
+<style>
+    #content-grid {
+        margin: 2vw;
+        grid-template-columns: 1fr;
+    }
+
+        #content-grid > dl > dd:nth-child(n+2) {
+            margin: 3%;
+        }
+
+            #content-grid > dl > dd:nth-child(n+2) > div {
+                margin: 3%;
+            }
+
+    .site-button {
+        background-color: #f5f5f5;
+        color: #838383;
+    }
+
+        .site-button:hover {
+            background-color: #f5f5f5;
+            color: #0b91d4;
+        }
+
+    #content-grid > dl > dd:first-child > a:nth-child(2) {
+        float: right;
+    }
+
+    .isDisabled {
+        color: currentColor;
+        cursor: not-allowed;
+        opacity: 0.5;
+        text-decoration: none;
+    }
+</style>  

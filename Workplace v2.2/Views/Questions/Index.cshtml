@@ -1,0 +1,157 @@
+﻿@model IEnumerable<Workplace_v2._2.Models.Question>
+@using Workplace_v2._2.Models;
+@using Microsoft.AspNet.Identity
+@{
+    var job = ViewBag.Job;
+    ViewBag.Title = job.Title + " Questions";
+    ApplicationDbContext db = new ApplicationDbContext();
+    var departmentId = db.Jobs.Find(job.JobId).DepartmentId;
+    var user = db.Users.Find(User.Identity.GetUserId());
+}
+
+<article id="tabs-min" class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
+    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+        <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="#tabs-min-1">@ViewBag.Title</a></li>
+        <li class="ui-state-default ui-corner-top">
+            <a href="#tabs-min-2" title="Add New Question">
+                <span class="glyphicon glyphicon-plus"></span>
+            </a>
+        </li>
+        <a href="~/Departments/Details/@job.Department.DepartmentId" class="site-button">Back to @job.Department.Name department</a>
+    </ul>
+    <div id="tabs-min-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+        <div class="grid" id="content-grid">
+            @if (Model.Any())
+            {
+                var count = 1;
+                foreach (var question in Model)
+                {
+                    <dl>
+                        <dd>
+                            @("Question ")
+                            <b>@("#" + count)</b>
+                            @(" by " + question.Creator.UserName)
+                            @if (user.Id == question.CreatorId || User.IsInRole("Administrator") || user.AdminDepartmentId == departmentId)
+                            {
+                                using (Html.BeginForm("DeleteQuestion", "Questions", new { id = question.QuestionId, url = Url.Action("Index", "Questions", routeValues: null) }, FormMethod.Post, new { @id = "deleteQuestionForm" + question.QuestionId, role = "form", enctype = "multipart/form-data" }))
+                                {
+                                    @Html.HttpMethodOverride(HttpVerbs.Delete)
+                                    @Html.AntiForgeryToken()
+                                    <a href="javascript:document.getElementById('deleteQuestionForm@(question.QuestionId)').submit()" title="Delete Question">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </a>
+                                }
+                            }
+                            @if (user.Id == question.CreatorId || User.IsInRole("Administrator"))
+                            {
+                                <a onclick ="showEditForm(@(question.QuestionId))" title="Edit Question">
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                </a>
+                                @*
+                                <a href="~/Questions/Edit/@question.QuestionId" title="Edit Question">
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                </a>
+                                *@
+                            }
+                        </dd>
+                        <dd id="displayQuestion@(question.QuestionId)">@question.Text</dd>
+                        <dd id="editQuestion@(question.QuestionId)" style="display:none">
+                            @Html.Partial("~/Views/Questions/EditPartial.cshtml", question)
+                        </dd>
+                    </dl>
+                    ++count;
+                }
+            }
+            else
+            {
+                <dl>
+                    <dd>
+                        @("No questions.")
+                    </dd>
+                </dl>
+            }
+        </div>
+    </div>
+    <div id="tabs-min-2" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide">
+        <div class="grid" id="user-grid">
+            @Html.Partial("~/Views/Questions/CreatePartial.cshtml", new Question { CreatorId = user.Id, JobId = job.JobId })
+        </div>
+    </div>
+</article>
+@section Style{
+    <style>
+        article > ul > a{
+            float:right;
+            font-weight:normal;
+            color:white !important;
+        }
+        article > ul > a:hover{
+            color: #0b91d4 !important;
+        }
+        #content-grid {
+            margin: 2vw;
+            grid-template-columns: 1fr;
+        }
+            #content-grid > dl > dd > a,
+            #content-grid > dl > dd > form {
+                margin: 5px;
+                float: right;
+                display: inline-block;
+            }
+            #content-grid > dl > dd > a span,
+            #content-grid > dl > dd > form span {
+                color: #838383;
+            }
+            #content-grid > dl > dd > a span:hover,
+            #content-grid > dl > dd > form span:hover {
+                color: #0b91d4;
+            }
+        @@media(max-width:1200px) {
+            textarea {
+                margin-left: 15% !important;
+                width: 90% !important;
+            }
+        }
+
+        @@media(max-width:992px) {
+            textarea {
+                margin-left: 10% !important;
+                width: 80% !important;
+            }
+        }
+        #save-button {
+            margin-top:5%;
+            margin-left: 50%;
+        }
+        textarea {
+            margin-left: 20%;
+            width: 100%;
+            max-width: 800px !important;
+        }
+    </style>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+}
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#tabs-min").tabs();
+        });
+
+        function showEditForm(id) {
+            if (document.getElementById("displayQuestion" + id).style.display == "inline-block") {
+                document.getElementById("displayQuestion" + id).style.display = "none";
+                document.getElementById("editQuestion" + id).style.display = "inline-block";
+            }
+            else {
+                document.getElementById("displayQuestion" + id).style.display = "inline-block";
+                document.getElementById("editQuestion" + id).style.display = "none";
+            }
+        }
+    </script>
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+}

@@ -1,0 +1,45 @@
+﻿@model Workplace_v2._2.Models.Answer
+
+@{
+    ViewBag.Title = "AnswerForm";
+}
+
+<h2>AnswerForm</h2>
+
+@using (Html.BeginForm("AnswerForm", "Answers", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.HttpMethodOverride(HttpVerbs.Put)
+    @Html.ValidationSummary()
+    <table>
+        <tr>
+            <th>
+                @Html.DisplayFor(a => Model.Question.QuestionText)
+            </th>
+            <td>
+                @Html.DisplayFor(a => Model.AnswerText)
+            </td>
+            <td>
+                @Html.EditorFor(a => Model.AnswerScore)
+            </td>
+        </tr>
+    </table>
+    @Html.HiddenFor(qa => Model.AnswerId)
+
+
+    @Html.HiddenFor(qa => Model.Question.CreatorId)
+    @Html.HiddenFor(qa => Model.Question.DomainId)
+    @Html.HiddenFor(qa => Model.Question.QuestionId)
+    @Html.HiddenFor(qa => Model.Question.QuestionText)
+
+
+    @Html.HiddenFor(qa => Model.InterviewId)
+    @Html.HiddenFor(qa => Model.QuestionId)
+    @Html.HiddenFor(qa => Model.AnswerId)
+    @Html.HiddenFor(qa => Model.AnswerScore)
+
+    @Html.AntiForgeryToken()
+    <div class="form-actions no-color">
+        <input type="submit" value="Grade Next Question" class="btn btn-default" /> |
+        @Html.ActionLink("Back to List", "Index", "Home")
+    </div>
+}

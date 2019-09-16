@@ -1,0 +1,34 @@
+﻿@model Workplace_v2._2.Models.InterviewQuestion
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>InterviewQuestion</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Interview.InterviewId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Interview.InterviewId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Question.QuestionText)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Question.QuestionText)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.InterviewQuestionId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

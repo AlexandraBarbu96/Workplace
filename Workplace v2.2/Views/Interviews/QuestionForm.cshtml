@@ -1,0 +1,101 @@
+﻿@model Workplace_v2._2.Models.Answer
+@{
+    ViewBag.Title = "Details";
+    //var endtime = DateTime.UtcNow.AddSeconds(ViewBag.secondsLeft);
+    var endtime = (DateTime)ViewBag.TimeExpire;
+    var timeRemaining = TimeSpan.FromTicks(endtime.Ticks - DateTime.UtcNow.Ticks).TotalSeconds;
+    string QuestionNumber = ViewBag.QuestionNumber.ToString();
+}
+
+<div>Time remaining on the question: <span id="minRemaining"></span> : <span id="secRemaining"></span></div>
+<table>
+    <tr>
+        @for (int i = 0; i < 10; ++i)
+        {
+            <td>
+                @if (i == ViewBag.MaxQuestionNumber - 1)
+                {
+                    <button>@Html.ActionLink((i + 1).ToString(), "QuestionForm", "Interviews", new { idi = Model.InterviewId, qn = i + 1, mq = ViewBag.MaxQuestionNumber, TimeExpire = ViewBag.TimeExpire }, new { @class = "alert alert-info" })</button>
+                }
+                else if (i < ViewBag.MaxQuestionNumber - 1)
+                {
+                    <button>@Html.ActionLink((i + 1).ToString(), "QuestionForm", "Interviews", new { idi = Model.InterviewId, qn = i + 1, mq = ViewBag.MaxQuestionNumber, TimeExpire = ViewBag.TimeExpire }, new { @class = "alert alert" })</button>
+                }
+                else
+                {
+                    <button>@Html.ActionLink((i + 1).ToString(), "QuestionForm", "Interviews", new { idi = Model.InterviewId, qn = i + 1, mq = ViewBag.MaxQuestionNumber, TimeExpire = ViewBag.TimeExpire }, new { @onclick = "javascript:return false;" })</button>
+                }
+            </td>
+        }
+    </tr>
+    <tr>
+        @*
+            @Html.Partial("SubmitQuestionForm",Model)
+        *@
+        @using (Html.BeginForm("SubmitQuestionForm", "Interviews",
+                new { idi = Model.InterviewId, nqn = ViewBag.QuestionNumber + 1, mq = ViewBag.MaxQuestionNumber, TimeExpire = ViewBag.TimeExpire, answerToSubmit = @Model.AnswerText },
+                FormMethod.Post, new { @class = "form-horizontal", name = "questionForm", role = "form", enctype = "multipart/form-data" }))
+        {
+            @Html.HttpMethodOverride(HttpVerbs.Put)
+
+            @Html.Label("", QuestionNumber + ". ", new { })
+            @Html.DisplayFor(qa => Model.Question.QuestionText, new { @class = "form-control" })
+            @Html.TextBoxFor(qa => Model.AnswerText, new { @class = "form-control" })
+
+            @Html.HiddenFor(qa => Model.AnswerId)
+
+            @Html.HiddenFor(qa => Model.Question.CreatorId)
+            @Html.HiddenFor(qa => Model.Question.DomainId)
+            @Html.HiddenFor(qa => Model.Question.QuestionId)
+            @Html.HiddenFor(qa => Model.Question.QuestionText)
+
+
+            @Html.HiddenFor(qa => Model.InterviewId)
+            @Html.HiddenFor(qa => Model.QuestionId)
+
+            @Html.HiddenFor(qa => Model.AnswerScore)
+            @Html.HiddenFor(qa => Model.AnswerText)
+
+            @Html.AntiForgeryToken()
+            <td class="form-actions no-color">
+                <input type="submit" value="Next Question" class="btn btn-default" />
+            </td>
+        }
+    </tr>
+</table>
+<script>
+    var remSeconds = @timeRemaining;
+    var secondsCounter = remSeconds % 60;
+
+    function formatNumber(number) {
+        if (number < 10) return '0' + number;
+        else return '' + number;
+    }
+
+    function startTick() {
+        document.getElementById("secRemaining").innerText = formatNumber(parseInt(secondsCounter));
+        document.getElementById("minRemaining").innerText = formatNumber(parseInt(remSeconds / 60));
+
+        var _tick = setInterval(function () {
+            if (remSeconds > 0) {
+                remSeconds = remSeconds - 1;
+                secondsCounter = secondsCounter - 1;
+                if (secondsCounter < 0) {
+                    secondsCounter = 60 + secondsCounter;
+                }
+                document.getElementById("secRemaining").innerText = formatNumber(parseInt(secondsCounter));
+                document.getElementById("minRemaining").innerText = formatNumber(parseInt(remSeconds / 60));
+                if (secondsCounter == 0) {
+                    secondsCounter = 60;
+                }
+            }
+            else {
+                alert('The time for the current question has expired.');
+                clearInterval(_tick);
+                window.location.href = "/Interviews/QuestionForm/Model";
+            }
+
+        }, 1000)
+    }
+    startTick();
+</script>

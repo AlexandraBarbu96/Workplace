@@ -1,0 +1,52 @@
+﻿@model Workplace_v2._2.Models.Interview
+
+@{
+    ViewBag.Title = "ChangeSupervisor";
+}
+
+<h2>ChangeSupervisor</h2>
+@*
+    @using (Html.BeginForm("PostChangeSupervisor", "Interview", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+*@
+@using (Html.BeginForm())
+{
+    @Html.HttpMethodOverride(HttpVerbs.Put)
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Interview</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.InterviewId)
+        @Html.HiddenFor(model => model.IsDone)
+        @Html.HiddenFor(model => model.IsGraded)
+        @Html.HiddenFor(model => model.HasBegun)
+        @Html.HiddenFor(model => model.InterviewScore)
+        @Html.HiddenFor(model => model.CandidateId)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Candidate.UserName, "Candidate", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.Candidate.UserName, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SupervisorId, "Supervisor", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("newSupervisor", new SelectList(ViewBag.Supervisors, "Value", "Text", (string)ViewBag.supervisorId), null, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.SupervisorId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

@@ -1,0 +1,100 @@
+﻿@model IEnumerable<Workplace_v2._2.Models.Interview>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+@if (TempData.ContainsKey("success"))
+{
+    <h4 class="alert alert-info" role="alert">@ViewBag.message</h4>
+}
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayName("Interview Id")
+        </th>
+        @if (User.IsInRole("Administrator"))
+        {
+            <th>
+                @Html.DisplayName("Supervisor")
+            </th>
+        }
+        <th>
+            @Html.DisplayName("Candidate")
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Score)
+        </th>
+        @*
+        <th></th>
+        <th></th>
+        *@
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        if (item.IsDone == true && item.IsGraded == false)
+        {
+    <tr class="alert alert-info">
+        <td>
+            @Html.ActionLink("See Answers", "Details", "Answers", new { idi = item.InterviewId }, "")
+        </td>
+        @if (User.IsInRole("Administrator"))
+        {
+            <td>
+                @Html.DisplayFor(modelItem => item.Job.Department.Admin.UserName)
+            </td>
+        }
+        <td>
+            @Html.DisplayFor(modelItem => item.Candidate.UserName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Score)
+        </td>
+    </tr>
+        }
+        else if (item.IsDone == true && item.IsGraded == true)
+        {
+            <tr class="alert alert-success">
+                <td>
+                    @Html.DisplayFor(modelItem => item.InterviewId)
+                </td>
+                @if (User.IsInRole("Administrator"))
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Job.Department.Admin.UserName)
+                    </td>
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.Candidate.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Score)
+                </td>
+
+</tr>
+        }
+        else
+        {
+            <tr class="alert alert-danger">
+                <td>
+                    @Html.DisplayFor(modelItem => item.InterviewId)
+                </td>
+                @if (User.IsInRole("Administrator"))
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Job.Department.Admin.UserName)
+                    </td>
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.Candidate.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Score)
+                </td>
+            </tr>
+        }
+    }
+
+</table>

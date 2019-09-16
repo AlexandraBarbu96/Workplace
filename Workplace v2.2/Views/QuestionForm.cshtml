@@ -1,0 +1,44 @@
+﻿@model Workplace_v2._2.Models.Answer
+
+<div>
+    <h4>Answer</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Interview.CandidateId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Interview.CandidateId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Question.QuestionText)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Question.QuestionText)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AnswerText)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AnswerText)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AnswerScore)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AnswerScore)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.AnswerId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
